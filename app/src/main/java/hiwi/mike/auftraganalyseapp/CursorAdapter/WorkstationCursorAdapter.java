@@ -1,0 +1,48 @@
+package hiwi.mike.auftraganalyseapp.CursorAdapter;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CursorAdapter;
+import android.widget.TextView;
+
+import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
+import hiwi.mike.auftraganalyseapp.R;
+
+/**
+ * Created by dave on 16.06.16.
+ */
+public class WorkstationCursorAdapter extends CursorAdapter {
+    public WorkstationCursorAdapter(Context context, Cursor cursor, int flags)
+    {
+        super(context, cursor, 0);
+    }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent)
+    {
+        return LayoutInflater.from(context).inflate(R.layout.listitem, parent, false);
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor)
+    {
+        TextView tvName = (TextView) view.findViewById(R.id.tvHeader);
+        TextView tvBody = (TextView) view.findViewById(R.id.tvBody);
+
+        String name = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME));
+
+        tvName.setText(name);
+        tvBody.setHeight(0);
+
+        view.setTag(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
+    }
+
+    @Override
+    public void changeCursor(Cursor cursor)
+    {
+        super.changeCursor(cursor);
+    }
+}
