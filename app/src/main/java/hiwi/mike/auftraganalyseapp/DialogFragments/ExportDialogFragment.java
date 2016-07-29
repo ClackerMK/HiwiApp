@@ -8,13 +8,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.os.EnvironmentCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOError;
-import java.io.IOException;
 import java.util.Locale;
 
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
@@ -67,10 +64,10 @@ public class ExportDialogFragment extends DialogFragment {
             crs.close();
         }
         if (project_id != null) {
-            Cursor crs = db.rawQuery(WorkbookContract.GET_PROJECTS_BY_WORKBOOK(project_id), null);
+            Cursor crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(project_id), null);
             crs.moveToFirst();
             nameProjekt = crs.getString(crs.getColumnIndexOrThrow(
-                    WorkbookContract.ProjectEntry.COLUMN_NAME_ENTRY_NAME
+                    WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME
             ));
             crs.close();
         }
@@ -196,13 +193,13 @@ public class ExportDialogFragment extends DialogFragment {
                 String worksheetName;
                 WritableSheet worksheet;
 
-                crs = sqlDB.rawQuery(WorkbookContract.GET_PROJECTS_BY_ID(projects[y]), null);
+                crs = sqlDB.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(projects[y]), null);
                 crs.moveToFirst();
 
                 if (crs.getInt(crs.getColumnIndexOrThrow(
-                        WorkbookContract.ProjectEntry.COLUMN_NAME_WORKBOOK_ID)) == workbooks[i]) {
+                        WorkbookContract.WorkstationEntry.COLUMN_NAME_WORKBOOK_ID)) == workbooks[i]) {
                     worksheetName = crs.getString(crs.getColumnIndexOrThrow(
-                            WorkbookContract.ProjectEntry.COLUMN_NAME_ENTRY_NAME));
+                            WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME));
                     worksheet = workbook.createSheet(worksheetName, Integer.MAX_VALUE);
 
                     // Add caption
@@ -216,7 +213,7 @@ public class ExportDialogFragment extends DialogFragment {
                     {
                         e.printStackTrace();
                     }
-                    crs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_PROJECT(projects[y]),null);
+                    crs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(projects[y]),null);
                     crs.moveToFirst();
                     int a = 1;
                     while (!crs.isAfterLast()) {

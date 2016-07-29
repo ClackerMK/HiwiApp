@@ -37,7 +37,7 @@ public class AddProjectDialogFragment extends DialogFragment {
                     {
                         WorkbookDbHelper dbHelper = new WorkbookDbHelper(getActivity());
                         if (input.getText().length() > 0) {
-                            dbHelper.getWritableDatabase().execSQL(WorkbookContract.INSERT_PROJECT(input.getText().toString(), workbook_id));
+                            dbHelper.getWritableDatabase().execSQL(WorkbookContract.INSERT_WORKSTATION(input.getText().toString(), workbook_id));
                             onCleanup.run();
                         } else
                         {

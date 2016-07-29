@@ -9,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -35,7 +33,7 @@ public class ExportExpandableListAdapater extends BaseExpandableListAdapter {
         _context = context;
         _db = db;
 
-        Cursor wbCrs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_WITH_ANZ_ORDERS(),null);
+        Cursor wbCrs = db.rawQuery(WorkbookContract.GET_ALL_WORKBOOKS(),null);
 
         _listDataHeader = new Vector<Pair<Integer,String>>();
         _listDataChild = new HashMap<Integer, List<Pair<Integer,String>>>();
@@ -46,12 +44,12 @@ public class ExportExpandableListAdapater extends BaseExpandableListAdapter {
 
             _listDataHeader.add(new Pair<Integer, String>(wbId, wbName));
 
-            Cursor prjCrs = db.rawQuery(WorkbookContract.GET_PROJECTS_BY_WORKBOOK(wbId),null);
+            Cursor prjCrs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(wbId),null);
             List<Pair<Integer, String>> prjList = new Vector<Pair<Integer, String>>();
             while (prjCrs.moveToNext())
             {
                 final Integer prjId = prjCrs.getInt(wbCrs.getColumnIndexOrThrow("_id"));
-                final String prjName = prjCrs.getString(wbCrs.getColumnIndexOrThrow(WorkbookContract.ProjectEntry.COLUMN_NAME_ENTRY_NAME));
+                final String prjName = prjCrs.getString(wbCrs.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME));
 
                 prjList.add(new Pair<Integer, String>(prjId, prjName));
             }

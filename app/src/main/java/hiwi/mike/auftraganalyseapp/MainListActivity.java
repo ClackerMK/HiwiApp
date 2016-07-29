@@ -1,27 +1,20 @@
 package hiwi.mike.auftraganalyseapp;
 
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
-import java.util.List;
 
 import hiwi.mike.auftraganalyseapp.CursorAdapter.OrderCursorAdapter;
 import hiwi.mike.auftraganalyseapp.CursorAdapter.ProjectCursorAdapter;
@@ -32,7 +25,6 @@ import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddProjectDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkbookDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkstationDialogFragment;
-import hiwi.mike.auftraganalyseapp.DialogFragments.ExportDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.OnAcceptDialogFragment;
 
 public class MainListActivity extends AppCompatActivity {
@@ -162,7 +154,7 @@ public class MainListActivity extends AppCompatActivity {
                     case Projects:
                         final Integer PRJid = (int)view.getTag();
 
-                        crs = db.rawQuery(WorkbookContract.GET_PROJECTS_BY_ID(PRJid),null);
+                        crs = db.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(PRJid),null);
                         crs.moveToFirst();
                         acceptDiaFrag.setMessage("Wirklich das Projekt " +
                                 crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME)) +
@@ -171,8 +163,8 @@ public class MainListActivity extends AppCompatActivity {
                         acceptDiaFrag.setOnAccept(new Runnable() {
                             @Override
                             public void run() {
-                                db.delete(WorkbookContract.ProjectEntry.TABLE_NAME,
-                                        WorkbookContract.ProjectEntry.COLUMN_NAME_ENTRY_ID + "=?",
+                                db.delete(WorkbookContract.WorkstationEntry.TABLE_NAME,
+                                        WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_ID + "=?",
                                         new String[] {PRJid.toString()});
                             }
                         });
@@ -314,7 +306,7 @@ public class MainListActivity extends AppCompatActivity {
                 currentWBID = null;
                 currentPrjID = null;
 
-                crs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_WITH_ANZ_ORDERS(), null);
+                crs = db.rawQuery(WorkbookContract.GET_ALL_WORKBOOKS(), null);
                 adapter = new WorkbookCursorAdapter(getBaseContext(), crs, 0);
 
                 title = getString(R.string.app_name);
@@ -333,7 +325,7 @@ public class MainListActivity extends AppCompatActivity {
                 vals.put(WorkbookContract.WorkbookEntry.COLUMN_NAME_LAST_OPENED, );
                 db.update(WorkbookContract.WorkbookEntry.TABLE_NAME,,)
                 */
-                crs = db.rawQuery(WorkbookContract.GET_PROJECTS_BY_WORKBOOK(currentWBID), null);
+                crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(currentWBID), null);
                 adapter = new ProjectCursorAdapter(getBaseContext(), crs, 0);
 
                 titleCrs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_BY_ID(currentWBID), null);
@@ -363,7 +355,7 @@ public class MainListActivity extends AppCompatActivity {
                     currentPrjID = id;
                 }
 
-                crs = db.rawQuery(WorkbookContract.GET_ORDERS_BY_PROJECT(currentPrjID), null);
+                crs = db.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(currentPrjID), null);
                 adapter = new OrderCursorAdapter(getBaseContext(), crs, 0);
 
                 titleCrs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_BY_ID(currentWBID), null);
@@ -371,10 +363,10 @@ public class MainListActivity extends AppCompatActivity {
                 title = titleCrs.getString(
                         titleCrs.getColumnIndexOrThrow(WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME));
                 title += "> ";
-                titleCrs = db.rawQuery(WorkbookContract.GET_PROJECTS_BY_ID(currentPrjID), null);
+                titleCrs = db.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(currentPrjID), null);
                 titleCrs.moveToFirst();
                 title += titleCrs.getString(
-                        titleCrs.getColumnIndexOrThrow(WorkbookContract.ProjectEntry.COLUMN_NAME_ENTRY_NAME)
+                        titleCrs.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME)
                 );
 
                 showBackButton();
@@ -401,16 +393,16 @@ public class MainListActivity extends AppCompatActivity {
 
         switch (currentTable) {
             case Workbooks:
-                crs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_WITH_ANZ_ORDERS(), null);
+                crs = db.rawQuery(WorkbookContract.GET_ALL_WORKBOOKS(), null);
                 break;
             case Projects:
-                crs = db.rawQuery(WorkbookContract.GET_PROJECTS_BY_WORKBOOK(currentWBID), null);
+                crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(currentWBID), null);
                 break;
             case Workstations:
                 crs = db.rawQuery(WorkbookContract.GET_WORKSTATION_BY_WRB_ID(currentWBID), null);
                 break;
             case Orders:
-                crs = db.rawQuery(WorkbookContract.GET_ORDERS_BY_PROJECT(currentPrjID), null);
+                crs = db.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(currentPrjID), null);
                 break;
         }
 

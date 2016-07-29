@@ -1,12 +1,10 @@
 package hiwi.mike.auftraganalyseapp;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -260,13 +258,13 @@ public class NewExportActivity extends AppCompatActivity {
                 String worksheetName;
                 WritableSheet worksheet;
 
-                crs = sqlDB.rawQuery(WorkbookContract.GET_PROJECTS_BY_ID(projects[y]), null);
+                crs = sqlDB.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(projects[y]), null);
                 crs.moveToFirst();
 
                 if (crs.getInt(crs.getColumnIndexOrThrow(
-                        WorkbookContract.ProjectEntry.COLUMN_NAME_WORKBOOK_ID)) == workbooks[i]) {
+                        WorkbookContract.WorkstationEntry.COLUMN_NAME_WORKBOOK_ID)) == workbooks[i]) {
                     worksheetName = crs.getString(crs.getColumnIndexOrThrow(
-                            WorkbookContract.ProjectEntry.COLUMN_NAME_ENTRY_NAME));
+                            WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME));
                     worksheet = workbook.createSheet(worksheetName, Integer.MAX_VALUE);
 
                     // Add caption
@@ -280,7 +278,7 @@ public class NewExportActivity extends AppCompatActivity {
                     {
                         e.printStackTrace();
                     }
-                    crs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_PROJECT(projects[y]),null);
+                    crs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(projects[y]),null);
                     crs.moveToFirst();
                     int a = 1;
                     while (!crs.isAfterLast()) {

@@ -1,14 +1,10 @@
 package hiwi.mike.auftraganalyseapp;
 
-import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +12,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -114,10 +109,10 @@ public class EditOrderActivity extends AppCompatActivity {
         title = titleCrs.getString(titleCrs.getColumnIndexOrThrow(WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME));
         title += "> ";
 
-        titleCrs = db.rawQuery(WorkbookContract.GET_PROJECTS_BY_ID(PrjID),null);
+        titleCrs = db.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(PrjID),null);
 
         titleCrs.moveToFirst();
-        title += titleCrs.getString(titleCrs.getColumnIndexOrThrow(WorkbookContract.ProjectEntry.COLUMN_NAME_ENTRY_NAME));
+        title += titleCrs.getString(titleCrs.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME));
         title += "> ";
 
         if (newOrder)

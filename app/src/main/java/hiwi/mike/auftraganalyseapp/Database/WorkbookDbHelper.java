@@ -33,7 +33,7 @@ public class WorkbookDbHelper extends SQLiteOpenHelper {
         db.execSQL(WorkbookContract.OrderEntry.CREATE_TABLE);
         db.execSQL(WorkbookContract.WorkbookEntry.CREATE_TABLE);
         db.execSQL(WorkbookContract.WorkstationEntry.CREATE_TABLE);
-        db.execSQL(WorkbookContract.ProjectEntry.CREATE_TABLE);
+        db.execSQL(WorkbookContract.WorkstationEntry.CREATE_TABLE);
     }
 
 
@@ -42,7 +42,7 @@ public class WorkbookDbHelper extends SQLiteOpenHelper {
         db.execSQL(WorkbookContract.OrderEntry.DELETE_TABLE);
         db.execSQL(WorkbookContract.WorkbookEntry.DELETE_TABLE);
         db.execSQL(WorkbookContract.WorkstationEntry.DELETE_TABLE);
-        db.execSQL(WorkbookContract.ProjectEntry.DELETE_TABLE);
+        db.execSQL(WorkbookContract.WorkstationEntry.DELETE_TABLE);
     }
 
     @Override
