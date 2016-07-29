@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
-import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkstationDialogFragment;
+import hiwi.mike.auftraganalyseapp.DialogFragments.AddProjectDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.DatePickerFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.TimePickerFragment;
 
@@ -89,18 +89,22 @@ public class EditOrderActivity extends AppCompatActivity {
             CheckBox chkBox = (CheckBox) findViewById(R.id.checkBox);
 
             chkBox.setChecked(cursor.getInt(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_WIP)) == 1);
+        }
 
-            for (int i = 0; i < ws_spinner.getCount(); i++)
+        Cursor crs = dbHelper.getReadableDatabase().
+                rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(PrjID),null);
+        crs.moveToFirst();
+        for (int i = 0; i < ws_spinner.getCount(); i++)
+        {
+            Cursor c = (Cursor) ws_spinner.getItemAtPosition(i);
+            if (c.getString(c.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME)).equals(
+                    crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME))))
             {
-                Cursor c = (Cursor) ws_spinner.getItemAtPosition(i);
-                if (c.getString(c.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME)).equals(
-                        cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME))))
-                {
-                    ws_spinner.setSelection(i);
-                    break;
-                }
+                ws_spinner.setSelection(i);
+                break;
             }
         }
+
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor titleCrs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_BY_ID(WorkbID),null);
         String title;
@@ -130,14 +134,14 @@ public class EditOrderActivity extends AppCompatActivity {
     void addWorkstation(View _)
     {
         Log.d("image button", "addWorkstation()");
-        AddWorkstationDialogFragment awdf = new AddWorkstationDialogFragment();
+        AddProjectDialogFragment awdf = new AddProjectDialogFragment();
         awdf.setCleanup(new Runnable() {
             @Override
             public void run() {
                 reloadSpinner();
             }
         });
-        awdf.setWorkbook_id(WorkbID);
+        awdf.setWorkbookID(WorkbID);
         awdf.show(getSupportFragmentManager(), "add");
     }
 
@@ -153,7 +157,7 @@ public class EditOrderActivity extends AppCompatActivity {
                 ((TextView)findViewById(R.id.targetdate_text)).getText().toString());
         vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TIME,
                 ((TextView)findViewById(R.id.time_text)).getText().toString());
-        vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_PROJECT_ID,
+        vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_WORKSTATION_ID,
                 PrjID);
         vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_WIP,
                 ((CheckBox)findViewById(R.id.checkBox)).isChecked() ? 1 : 0);
@@ -165,7 +169,6 @@ public class EditOrderActivity extends AppCompatActivity {
 
         if (newOrder)
         {
-
             db.insert(WorkbookContract.OrderEntry.TABLE_NAME,
                     null,
                     vals);

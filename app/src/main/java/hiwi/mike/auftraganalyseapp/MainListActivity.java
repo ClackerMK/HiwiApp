@@ -19,25 +19,21 @@ import android.widget.ListView;
 import hiwi.mike.auftraganalyseapp.CursorAdapter.OrderCursorAdapter;
 import hiwi.mike.auftraganalyseapp.CursorAdapter.ProjectCursorAdapter;
 import hiwi.mike.auftraganalyseapp.CursorAdapter.WorkbookCursorAdapter;
-import hiwi.mike.auftraganalyseapp.CursorAdapter.WorkstationCursorAdapter;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddProjectDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkbookDialogFragment;
-import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkstationDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.OnAcceptDialogFragment;
 
 public class MainListActivity extends AppCompatActivity {
 
     private enum Tables {
         Workbooks,
-        Projects,
-        Orders,
-        Workstations
+        Workstations,
+        Orders
     }
 
     private Tables  currentTable = Tables.Workbooks;
-    private Tables  priorTable = null;
     private Integer currentWBID = null;
     private Integer currentPrjID = null;
 
@@ -78,7 +74,7 @@ public class MainListActivity extends AppCompatActivity {
                             }
                         });
                         break;
-                    case Projects:
+                    case Workstations:
                         frgmnt = new AddProjectDialogFragment();
                         ((AddProjectDialogFragment) frgmnt).setCleanup(new Runnable() {
                             @Override
@@ -87,16 +83,6 @@ public class MainListActivity extends AppCompatActivity {
                             }
                         });
                         ((AddProjectDialogFragment) frgmnt).setWorkbookID(currentWBID);
-                        break;
-                    case Workstations:
-                        frgmnt = new AddWorkstationDialogFragment();
-                        ((AddWorkstationDialogFragment) frgmnt).setCleanup(new Runnable() {
-                            @Override
-                            public void run() {
-                                reloadAll();
-                            }
-                        });
-                        ((AddWorkstationDialogFragment) frgmnt).setWorkbook_id(currentWBID);
                         break;
                     case Orders:
                         Intent intent = new Intent(getBaseContext(), EditOrderActivity.class);
@@ -151,31 +137,13 @@ public class MainListActivity extends AppCompatActivity {
                             }
                         });
                         break;
-                    case Projects:
-                        final Integer PRJid = (int)view.getTag();
-
-                        crs = db.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(PRJid),null);
-                        crs.moveToFirst();
-                        acceptDiaFrag.setMessage("Wirklich das Projekt " +
-                                crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME)) +
-                                " und alle dazugehörigen Aufträge löschen?");
-
-                        acceptDiaFrag.setOnAccept(new Runnable() {
-                            @Override
-                            public void run() {
-                                db.delete(WorkbookContract.WorkstationEntry.TABLE_NAME,
-                                        WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_ID + "=?",
-                                        new String[] {PRJid.toString()});
-                            }
-                        });
-                        break;
                     case Workstations:
                         final Integer WSid = (int)view.getTag();
 
                         crs = db.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(WSid),null);
                         crs.moveToFirst();
                         acceptDiaFrag.setMessage("Wirklich die Arbeitsstation " +
-                                crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME)) +
+                                crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME)) +
                                 " und alle dazugehörigen Aufträge löschen?");
 
                         acceptDiaFrag.setOnAccept(new Runnable() {
@@ -230,22 +198,15 @@ public class MainListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_workstations)
-        {
-            switch_to_TableView(Tables.Workstations, null);
-            return true;
-        } else if (id == android.R.id.home)
+        if (id == android.R.id.home)
         {
             switch (currentTable)
             {
-                case Projects:
+                case Workstations:
                     switch_to_TableView(Tables.Workbooks, null);
                     break;
-                case Workstations:
-                    switch_to_TableView(priorTable,null);
-                    break;
                 case Orders:
-                    switch_to_TableView(Tables.Projects, null);
+                    switch_to_TableView(Tables.Workstations, null);
                     break;
             }
             return true;
@@ -276,9 +237,9 @@ public class MainListActivity extends AppCompatActivity {
         switch (currentTable)
         {
             case Workbooks:
-                switch_to_TableView(Tables.Projects, (Integer)view.getTag());
+                switch_to_TableView(Tables.Workstations, (Integer)view.getTag());
                 break;
-            case Projects:
+            case Workstations:
                 switch_to_TableView(Tables.Orders, (Integer)view.getTag());
                 break;
             case Orders:
@@ -312,9 +273,8 @@ public class MainListActivity extends AppCompatActivity {
                 title = getString(R.string.app_name);
 
                 hideBackButton();
-                hideWorkstationOption();
                 break;
-            case Projects:
+            case Workstations:
                 if (id != null)
                 {
                     currentWBID = id;
@@ -334,20 +294,6 @@ public class MainListActivity extends AppCompatActivity {
                         titleCrs.getColumnIndexOrThrow(WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME));
 
                 showBackButton();
-                showWorkstationOption();
-                break;
-            case Workstations:
-                crs = db.rawQuery(WorkbookContract.GET_WORKSTATION_BY_WRB_ID(currentWBID), null);
-                adapter = new WorkstationCursorAdapter(getBaseContext(), crs, 0);
-
-                titleCrs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_BY_ID(currentWBID), null);
-                titleCrs.moveToFirst();
-                title = titleCrs.getString(
-                        titleCrs.getColumnIndexOrThrow(WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME));
-                title += "> Workstations";
-
-                showBackButton();
-                hideWorkstationOption();
                 break;
             case Orders:
                 if (id != null)
@@ -370,7 +316,6 @@ public class MainListActivity extends AppCompatActivity {
                 );
 
                 showBackButton();
-                showWorkstationOption();
                 break;
         }
 
@@ -378,7 +323,6 @@ public class MainListActivity extends AppCompatActivity {
         tb.setTitle(title);
         assert lv != null;
         lv.setAdapter(adapter);
-        priorTable   = currentTable;
         currentTable = trgt;
         reloadAll();
     }
@@ -395,11 +339,8 @@ public class MainListActivity extends AppCompatActivity {
             case Workbooks:
                 crs = db.rawQuery(WorkbookContract.GET_ALL_WORKBOOKS(), null);
                 break;
-            case Projects:
-                crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(currentWBID), null);
-                break;
             case Workstations:
-                crs = db.rawQuery(WorkbookContract.GET_WORKSTATION_BY_WRB_ID(currentWBID), null);
+                crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(currentWBID), null);
                 break;
             case Orders:
                 crs = db.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(currentPrjID), null);
@@ -415,18 +356,6 @@ public class MainListActivity extends AppCompatActivity {
                 ((CursorAdapter)adapter).notifyDataSetChanged();
             }
         });
-    }
-
-    public void hideWorkstationOption()
-    {
-        if (menu != null)
-        {menu.findItem(R.id.action_workstations).setVisible(false);}
-    }
-
-    public void showWorkstationOption()
-    {
-        if (menu != null)
-        {menu.findItem(R.id.action_workstations).setVisible(true);}
     }
 
     public void hideBackButton()

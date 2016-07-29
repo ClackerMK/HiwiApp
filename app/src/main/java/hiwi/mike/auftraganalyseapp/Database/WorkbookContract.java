@@ -28,12 +28,12 @@ public final class WorkbookContract {
                 COLUMN_NAME_ENTRY_NAME + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_LAST_OPENED + TEXT_TYPE + " DEFAULT CURRENT_TIMESTAMP" +
                 ");";
-        public static final String DELETE_TABLE = "DROP TABLE " + TABLE_NAME + ";";
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
     }
 
     /* Inner class that defines the table contents of Projects */
     public static abstract class WorkstationEntry implements BaseColumns {
-        public static final String TABLE_NAME = "Projects";
+        public static final String TABLE_NAME = "Workstations";
         public static final String COLUMN_NAME_ENTRY_ID = "_id";
         public static final String COLUMN_NAME_WORKBOOK_ID = "wb_id";
         public static final String COLUMN_NAME_ENTRY_NAME = "name";
@@ -48,7 +48,7 @@ public final class WorkbookContract {
                 "FOREIGN KEY (" + COLUMN_NAME_WORKBOOK_ID + ") " +
                 "REFERENCES " + WorkbookEntry.TABLE_NAME + " (" + WorkbookEntry.COLUMN_NAME_ENTRY_ID + ") ON DELETE CASCADE" +
                 ");";
-        public static final String DELETE_TABLE = "DROP TABLE " + TABLE_NAME + ";";
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
     }
 
     /* Inner class that defines the table contents of Orders */
@@ -73,7 +73,7 @@ public final class WorkbookContract {
                 "REFERENCES " + WorkstationEntry.TABLE_NAME + " (" + WorkstationEntry.COLUMN_NAME_ENTRY_ID + ") ON DELETE CASCADE" +
                 ");";
 
-        public static final String DELETE_TABLE = "DROP TABLE " + TABLE_NAME + ";";
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
     }
 
     public static final String INSERT_WORKBOOK(String name)
@@ -152,7 +152,7 @@ public final class WorkbookContract {
                 OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE + " as " + OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE + COMMA_SEP +
                 OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_ENTRY_TIME + " as " + OrderEntry.COLUMN_NAME_ENTRY_TIME + COMMA_SEP +
                 OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WIP + " as " + OrderEntry.COLUMN_NAME_WIP + COMMA_SEP +
-                WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_NAME + " as " +  WorkstationEntry.COLUMN_NAME_ENTRY_NAME +
+                WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_NAME + " as " +  WorkstationEntry.COLUMN_NAME_ENTRY_NAME + COMMA_SEP +
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + " as " + WorkstationEntry.COLUMN_NAME_ENTRY_ID +
                 " FROM " + OrderEntry.TABLE_NAME + " INNER JOIN " + WorkstationEntry.TABLE_NAME + " ON " +
                 OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID + "=" + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID +

@@ -33,7 +33,6 @@ public class WorkbookDbHelper extends SQLiteOpenHelper {
         db.execSQL(WorkbookContract.OrderEntry.CREATE_TABLE);
         db.execSQL(WorkbookContract.WorkbookEntry.CREATE_TABLE);
         db.execSQL(WorkbookContract.WorkstationEntry.CREATE_TABLE);
-        db.execSQL(WorkbookContract.WorkstationEntry.CREATE_TABLE);
     }
 
 
@@ -42,13 +41,26 @@ public class WorkbookDbHelper extends SQLiteOpenHelper {
         db.execSQL(WorkbookContract.OrderEntry.DELETE_TABLE);
         db.execSQL(WorkbookContract.WorkbookEntry.DELETE_TABLE);
         db.execSQL(WorkbookContract.WorkstationEntry.DELETE_TABLE);
-        db.execSQL(WorkbookContract.WorkstationEntry.DELETE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        onDelete(db);
-        onCreate(db);
+
+        if (newVersion == 7)
+        {
+            db.execSQL(WorkbookContract.OrderEntry.DELETE_TABLE);
+            db.execSQL(WorkbookContract.WorkbookEntry.DELETE_TABLE);
+//            db.execSQL("DROP TABLE Projects;");
+            db.execSQL(WorkbookContract.WorkstationEntry.DELETE_TABLE);
+
+            onCreate(db);
+        }
+            else
+        {
+            onDelete(db);
+            onCreate(db);
+
+        }
     }
 
     @Override
