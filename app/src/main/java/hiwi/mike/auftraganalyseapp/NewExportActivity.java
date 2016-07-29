@@ -173,7 +173,7 @@ public class NewExportActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void exportToXSL(Integer[] workbooks, Integer[] projects, boolean override) {
+    private void exportToXSL(Integer[] workbooks, Integer[] workstations, boolean override) {
         if (!(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())))
         {
             Log.d("export XSL", "no external Staorage");
@@ -254,11 +254,11 @@ public class NewExportActivity extends AppCompatActivity {
             }
 
             // Insert all Projects as Worksheets into the Workbook
-            for (int y = 0; y < projects.length; ++y) {
+            for (int y = 0; y < workstations.length; ++y) {
                 String worksheetName;
                 WritableSheet worksheet;
 
-                crs = sqlDB.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(projects[y]), null);
+                crs = sqlDB.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(workstations[y]), null);
                 crs.moveToFirst();
 
                 if (crs.getInt(crs.getColumnIndexOrThrow(
@@ -273,12 +273,11 @@ public class NewExportActivity extends AppCompatActivity {
                         worksheet.addCell(new Label(1, 0, "Zieldatum", arialBoldFormat));
                         worksheet.addCell(new Label(2, 0, "ZAU", arialBoldFormat));
                         worksheet.addCell(new Label(3, 0, "WIP", arialBoldFormat));
-                        worksheet.addCell(new Label(4, 0, "Arbeitsstation", arialBoldFormat));
                     }catch (WriteException e)
                     {
                         e.printStackTrace();
                     }
-                    crs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(projects[y]),null);
+                    crs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(workstations[y]),null);
                     crs.moveToFirst();
                     int a = 1;
                     while (!crs.isAfterLast()) {
@@ -299,10 +298,6 @@ public class NewExportActivity extends AppCompatActivity {
                             worksheet.addCell(new Number(3, a,
                                     crs.getInt(crs.getColumnIndexOrThrow(
                                             WorkbookContract.OrderEntry.COLUMN_NAME_WIP)),
-                                    arialFormat));
-                            worksheet.addCell(new Label(4, a,
-                                    crs.getString(crs.getColumnIndexOrThrow(
-                                            WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME)),
                                     arialFormat));
                         } catch (WriteException e) {
                             e.printStackTrace();
