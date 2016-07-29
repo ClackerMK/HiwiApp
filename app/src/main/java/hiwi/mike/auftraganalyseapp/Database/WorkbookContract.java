@@ -55,7 +55,7 @@ public final class WorkbookContract {
     public static abstract class OrderEntry implements BaseColumns {
         public static final String TABLE_NAME = "Orders";
         public static final String COLUMN_NAME_ENTRY_ID = "_id";
-        public static final String COLUMN_NAME_PROJECT_ID = "w_id";
+        public static final String COLUMN_NAME_WORKSTATION_ID = "w_id";
         public static final String COLUMN_NAME_ENTRY_NR = "nr";
         public static final String COLUMN_NAME_ENTRY_TARGET_DATE = "targetDate";
         public static final String COLUMN_NAME_ENTRY_TIME = "givenTime";
@@ -64,12 +64,12 @@ public final class WorkbookContract {
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
                 "(" +
                 COLUMN_NAME_ENTRY_ID + " INTEGER PRIMARY KEY" + COMMA_SEP +
-                COLUMN_NAME_PROJECT_ID + " INTEGER" + COMMA_SEP +
+                COLUMN_NAME_WORKSTATION_ID + " INTEGER" + COMMA_SEP +
                 COLUMN_NAME_ENTRY_NR + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_ENTRY_TARGET_DATE + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_ENTRY_TIME + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_WIP + " INTEGER" + COMMA_SEP +
-                "FOREIGN KEY (" + COLUMN_NAME_PROJECT_ID + ") " +
+                "FOREIGN KEY (" + COLUMN_NAME_WORKSTATION_ID + ") " +
                 "REFERENCES " + WorkstationEntry.TABLE_NAME + " (" + WorkstationEntry.COLUMN_NAME_ENTRY_ID + ") ON DELETE CASCADE" +
                 ");";
 
@@ -124,7 +124,7 @@ public final class WorkbookContract {
                 " FROM " + WorkstationEntry.TABLE_NAME +
                 " LEFT OUTER JOIN " + OrderEntry.TABLE_NAME +
                 " ON " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + " = " +
-                OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_PROJECT_ID +
+                OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID +
                 " WHERE " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_WORKBOOK_ID + "=" + id +
                 " GROUP BY " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + COMMA_SEP +
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_NAME +
@@ -141,8 +141,8 @@ public final class WorkbookContract {
                 OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WIP + " as " + OrderEntry.COLUMN_NAME_WIP + COMMA_SEP +
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_NAME + " as " +  WorkstationEntry.COLUMN_NAME_ENTRY_NAME +
                 " FROM " + OrderEntry.TABLE_NAME + " INNER JOIN " + WorkstationEntry.TABLE_NAME + " ON " +
-                OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_PROJECT_ID + "=" + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID +
-                " WHERE " + OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_PROJECT_ID + "=" + prj_id + ";";
+                OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID + "=" + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID +
+                " WHERE " + OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID + "=" + prj_id + ";";
     }
 
     public static final String GET_ORDER_BY_ID(int order_id)
@@ -155,7 +155,7 @@ public final class WorkbookContract {
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_NAME + " as " +  WorkstationEntry.COLUMN_NAME_ENTRY_NAME +
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + " as " + WorkstationEntry.COLUMN_NAME_ENTRY_ID +
                 " FROM " + OrderEntry.TABLE_NAME + " INNER JOIN " + WorkstationEntry.TABLE_NAME + " ON " +
-                OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_PROJECT_ID + "=" + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID +
+                OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID + "=" + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID +
                 " WHERE " + OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_ENTRY_ID + "=" + order_id + ";";
     }
 }
