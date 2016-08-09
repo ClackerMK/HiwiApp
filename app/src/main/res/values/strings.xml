@@ -4,6 +4,6 @@
     <string name="action_workstations">Workstations</string>
     <string name="action_export">Exportieren</string>
     <string name="title_activity_edit_order">EditOrderActivity</string>
-    <string name="title_activity_export">Welche Mappen/Projekte sollen exportiert werden?</string>
+    <string name="title_activity_export">Welche Mappen und Maschinen bzw Arbeitsplätze sollen exportiert werden?</string>
     <string name="title_activity_new_export">NewExportActivity</string>
 </resources>

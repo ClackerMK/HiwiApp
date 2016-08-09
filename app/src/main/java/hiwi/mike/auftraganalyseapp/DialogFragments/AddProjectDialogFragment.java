@@ -28,7 +28,7 @@ public class AddProjectDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final EditText input = new EditText(getActivity());
 
-        builder.setMessage("Name des neuen Projektes")
+        builder.setMessage("Name der neuen Maschine/Arbeitsplatz")
                 .setView(input)
                 .setPositiveButton("Hinzufügen", new DialogInterface.OnClickListener()
                 {

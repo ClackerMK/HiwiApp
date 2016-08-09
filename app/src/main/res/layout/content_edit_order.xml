@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Nummer"
+            android:text="Auftragsnummer"
             android:id="@+id/textView" />
 
         <EditText
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Zeit"
+            android:text="Auftragszeit"
             android:id="@+id/textView2" />
 
         <EditText
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Zieldatum"
+            android:text="Plan-Fertigstellung"
             android:id="@+id/textView3" />
 
         <EditText
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Arbeitsstation"
+            android:text="Maschine/Arbeitsplatz"
             android:id="@+id/textView4" />
 
         <LinearLayout
@@ -97,7 +97,7 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="wird bearbeitet"
+                    android:text="in Bearbeitung"
                     android:id="@+id/checkBox"
                     android:checked="false" />
 
