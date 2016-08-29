@@ -64,4 +64,22 @@ public class Helper {
         }
         return true;
     }
+
+    public static String ISOtoDMY(String str) {
+        try {
+            return DMYFormat.format(ISOFormat.parse(str));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public static String DMYtoISO(String str) {
+        try {
+            return ISOFormat.format(DMYFormat.parse(str));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 }

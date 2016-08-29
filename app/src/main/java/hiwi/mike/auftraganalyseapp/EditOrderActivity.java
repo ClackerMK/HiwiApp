@@ -14,12 +14,17 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.ParseException;
+import java.util.Date;
 
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddProjectDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.DatePickerFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.TimePickerFragment;
+import hiwi.mike.auftraganalyseapp.Helper.Helper;
 
 public class EditOrderActivity extends AppCompatActivity {
 
@@ -61,6 +66,7 @@ public class EditOrderActivity extends AppCompatActivity {
                 ,null,null,null,null,null);
         SimpleCursorAdapter sca = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, spnnr_cursor, adapterCols, adapterRowViews,0);
         sca.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        assert ws_spinner != null;
         ws_spinner.setAdapter(sca);
 
         if (intent.hasExtra(MainListActivity.MESSAGE_ORDERID))
@@ -78,17 +84,28 @@ public class EditOrderActivity extends AppCompatActivity {
             TextView tview;
 
             tview = (TextView) findViewById(R.id.number_text);
+            assert tview != null;
             tview.setText(cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_NR)));
 
             tview = (TextView) findViewById(R.id.targetdate_text);
-            tview.setText(cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)));
+            assert tview != null;
+            tview.setText(Helper.ISOtoDMY(cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE))));
 
             tview = (TextView) findViewById(R.id.time_text);
+            assert tview != null;
             tview.setText(cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TIME)));
 
-            CheckBox chkBox = (CheckBox) findViewById(R.id.checkBox);
+            tview = (TextView) findViewById(R.id.docdate_text);
+            assert tview != null;
+            tview.setText(Helper.ISOtoDMY(cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE))));
 
+            CheckBox chkBox = (CheckBox) findViewById(R.id.checkBox);
+            assert chkBox != null;
             chkBox.setChecked(cursor.getInt(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_WIP)) == 1);
+        } else {
+            TextView tview = (TextView) findViewById(R.id.docdate_text);
+            assert tview != null;
+            tview.setText(Helper.DMYFormat.format(new Date()));
         }
 
         Cursor crs = dbHelper.getReadableDatabase().
@@ -145,16 +162,15 @@ public class EditOrderActivity extends AppCompatActivity {
         awdf.show(getSupportFragmentManager(), "add");
     }
 
-    void commitOrder(View _)
-    {
+    void commitOrder(View _) {
         Log.d("fab", "commitOrder()");
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues vals = new ContentValues();
+
         vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_NR,
                 ((TextView)findViewById(R.id.number_text)).getText().toString());
-        vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE,
-                ((TextView)findViewById(R.id.targetdate_text)).getText().toString());
+
         vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TIME,
                 ((TextView)findViewById(R.id.time_text)).getText().toString());
         vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_WORKSTATION_ID,
@@ -162,23 +178,46 @@ public class EditOrderActivity extends AppCompatActivity {
         vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_WIP,
                 ((CheckBox)findViewById(R.id.checkBox)).isChecked() ? 1 : 0);
 
+        vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE,
+                ((TextView)findViewById(R.id.docdate_text)).getText().toString());
+
+        vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE,
+                ((TextView)findViewById(R.id.targetdate_text)).getText().toString());
+
         int ws_id = ((Cursor)((Spinner) findViewById(R.id.ws_spinner)).getSelectedItem()).getInt(0);
         vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_WORKSTATION_ID,
                 ws_id);
 
 
-        if (newOrder)
+        if (!Helper.isValidDate(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)) ||
+                !Helper.isValidDate(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE))) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Fehlerhafter Datumseintrag!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        else
         {
-            db.insert(WorkbookContract.OrderEntry.TABLE_NAME,
-                    null,
-                    vals);
-            finish();
-        } else {
-            db.update(WorkbookContract.OrderEntry.TABLE_NAME,
-                    vals,
-                    WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_ID + "=?",
-                    new String[] {OrdrID.toString()});
-            finish();
+            try {
+                vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE,
+                        Helper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)));
+                vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE,
+                        Helper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (newOrder)
+            {
+                db.insert(WorkbookContract.OrderEntry.TABLE_NAME,
+                        null,
+                        vals);
+                finish();
+            } else {
+                db.update(WorkbookContract.OrderEntry.TABLE_NAME,
+                        vals,
+                        WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_ID + "=?",
+                        new String[] {OrdrID.toString()});
+                finish();
+            }
         }
     }
 
