@@ -41,7 +41,7 @@ public class OrderCursorAdapter extends CursorAdapter {
 
         String no = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_NR));
         String vorgabeDatum = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE));
-        DateFormat format = (DateFormat)Helper.YMDFormat.clone();
+        DateFormat format = (DateFormat)Helper.ISOFormat.clone();
         Date dVorgabeDatum = null;
         Date dDocumentDatum = null;
         try {
@@ -60,7 +60,7 @@ public class OrderCursorAdapter extends CursorAdapter {
         tvHeader.setText(no);
         tvBody.setText(String.format("Plan-Fertigstellung: %s\n" +
                 "Eintragsdatum: %s\n" +
-                "Tage Unterschied: %d\n" +
+                "ZDLV: %d\n" +
                 "Zeit: %s\n" +
                 "Wird bearbeitet: %s",
                 Helper.DMYFormat.format(dVorgabeDatum), Helper.DMYFormat.format(dDocumentDatum), daysDifference, zeit, wip));

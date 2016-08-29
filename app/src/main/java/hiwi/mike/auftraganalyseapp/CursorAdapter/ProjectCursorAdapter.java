@@ -61,10 +61,10 @@ public class ProjectCursorAdapter extends CursorAdapter {
         {
             Date documentedDate, targetDate;
             try {
-                documentedDate = Helper.YMDFormat.parse(
+                documentedDate = Helper.ISOFormat.parse(
                         ordersCrs.getString(ordersCrs.getColumnIndexOrThrow(
                                 WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)));
-                targetDate = Helper.YMDFormat.parse(
+                targetDate = Helper.ISOFormat.parse(
                         ordersCrs.getString(ordersCrs.getColumnIndexOrThrow(
                                 WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)));
                 ZDLV += Helper.daysBetween(
@@ -80,7 +80,7 @@ public class ProjectCursorAdapter extends CursorAdapter {
         df.setRoundingMode(RoundingMode.HALF_UP);
 
         tvHeader.setText(name);
-        tvBody.setText(String.format("Einträge: %d\n" + "ZDLV: %d\n" + "ZDLVm: %s", project_count, ZDLV, df.format(ZDLVm)));
+        tvBody.setText(String.format("Einträge: %d\n" + "ZDLVm: %s", project_count, df.format(ZDLVm)));
 
         view.setTag(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
     }
