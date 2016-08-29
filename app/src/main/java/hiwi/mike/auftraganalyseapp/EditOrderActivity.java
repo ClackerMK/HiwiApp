@@ -196,14 +196,12 @@ public class EditOrderActivity extends AppCompatActivity {
         }
         else
         {
-            try {
-                vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE,
-                        Helper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)));
-                vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE,
-                        Helper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+
+            vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE,
+                    Helper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)));
+            vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE,
+                    Helper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)));
+
 
             if (newOrder)
             {
