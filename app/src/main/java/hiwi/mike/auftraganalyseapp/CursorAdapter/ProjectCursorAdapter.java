@@ -31,7 +31,6 @@ public class ProjectCursorAdapter extends CursorAdapter {
     {
         super(context, cursor, 0);
 
-
         dbHelper = new WorkbookDbHelper(context);
         sqlDB = dbHelper.getReadableDatabase();
     }
@@ -55,7 +54,9 @@ public class ProjectCursorAdapter extends CursorAdapter {
                 cursor.getInt(cursor.getColumnIndexOrThrow("_id"))),null);
 
         int ZDLV = 0;
-        double ZDLVm = 0;
+        double ZDLVm;
+
+        int output = cursor.getInt(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT));
 
         while (ordersCrs.moveToNext())
         {
@@ -80,7 +81,11 @@ public class ProjectCursorAdapter extends CursorAdapter {
         df.setRoundingMode(RoundingMode.HALF_UP);
 
         tvHeader.setText(name);
-        tvBody.setText(String.format("Einträge: %d\n" + "ZDLVm: %s", project_count, df.format(ZDLVm)));
+        tvBody.setText(String.format("Bestand: %d\n" + "Leistung: %d\n" + "ZDL: %s\n" + "ZDLVm: %s",
+                project_count,
+                output,
+                df.format(((double)project_count) / output),
+                df.format(ZDLVm)));
 
         view.setTag(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
     }
