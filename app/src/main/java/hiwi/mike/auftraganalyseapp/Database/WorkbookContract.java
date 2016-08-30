@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
 public final class WorkbookContract {
     public WorkbookContract() {}
 
-    public static final int     VERSION = 8;
+    public static final int     VERSION = 9;
 
     private static final String TEXT_TYPE          = " TEXT";
     private static final String COMMA_SEP          = ",";
@@ -38,6 +38,7 @@ public final class WorkbookContract {
         public static final String COLUMN_NAME_WORKBOOK_ID = "wb_id";
         public static final String COLUMN_NAME_ENTRY_NAME = "name";
         public static final String COLUMN_NAME_LAST_OPENED = "lastOpened";
+        public static final String COLUMN_NAME_OUTPUT = "output";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
                 "(" +
@@ -45,6 +46,7 @@ public final class WorkbookContract {
                 COLUMN_NAME_WORKBOOK_ID + " INTEGER" + COMMA_SEP +
                 COLUMN_NAME_ENTRY_NAME + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_LAST_OPENED + TEXT_TYPE + " DEFAULT CURRENT_TIMESTAMP" + COMMA_SEP +
+                COLUMN_NAME_OUTPUT + " INTEGER " + COMMA_SEP +
                 "FOREIGN KEY (" + COLUMN_NAME_WORKBOOK_ID + ") " +
                 "REFERENCES " + WorkbookEntry.TABLE_NAME + " (" + WorkbookEntry.COLUMN_NAME_ENTRY_ID + ") ON DELETE CASCADE" +
                 ");";
@@ -85,11 +87,17 @@ public final class WorkbookContract {
                 "');";
     }
 
-    public static final String INSERT_WORKSTATION(String name, int wb_id)
+    public static final String INSERT_WORKSTATION(String name, int output, int wb_id)
     {
-        return "INSERT INTO " + WorkstationEntry.TABLE_NAME + "(" + WorkstationEntry.COLUMN_NAME_ENTRY_NAME + COMMA_SEP + WorkstationEntry.COLUMN_NAME_WORKBOOK_ID + ")" +
-                " VALUES ('" + name + "'" + COMMA_SEP + "'" +  wb_id +
-                "');";
+        return "INSERT INTO " + WorkstationEntry.TABLE_NAME + "(" +
+                    WorkstationEntry.COLUMN_NAME_ENTRY_NAME + COMMA_SEP +
+                    WorkstationEntry.COLUMN_NAME_OUTPUT + COMMA_SEP +
+                    WorkstationEntry.COLUMN_NAME_WORKBOOK_ID + ")" +
+                " VALUES (" +
+                    "'" + name + "'" + COMMA_SEP +
+                    "'" + output + "'" + COMMA_SEP +
+                    "'" + wb_id + "'" +
+                ");";
     }
 
     public static final String GET_ALL_WORKBOOKS()
@@ -121,6 +129,7 @@ public final class WorkbookContract {
     {
         return "SELECT " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + " as _id" + COMMA_SEP +
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_NAME + " as " + WorkstationEntry.COLUMN_NAME_ENTRY_NAME  + COMMA_SEP +
+                WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_OUTPUT + " as " + WorkstationEntry.COLUMN_NAME_OUTPUT + COMMA_SEP +
                 " COUNT(" + OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_ENTRY_ID + ") as count" +
                 //ProjectEntry.TABLE_NAME + "." + ProjectEntry.COLUMN_NAME_LAST_OPENED + " as " + ProjectEntry.COLUMN_NAME_LAST_OPENED +
                 " FROM " + WorkstationEntry.TABLE_NAME +
