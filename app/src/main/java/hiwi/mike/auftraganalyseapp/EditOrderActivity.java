@@ -16,12 +16,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
-import hiwi.mike.auftraganalyseapp.DialogFragments.AddProjectDialogFragment;
+import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkstationDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.DatePickerFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.TimePickerFragment;
 import hiwi.mike.auftraganalyseapp.Helper.Helper;
@@ -151,7 +150,7 @@ public class EditOrderActivity extends AppCompatActivity {
     void addWorkstation(View _)
     {
         Log.d("image button", "addWorkstation()");
-        AddProjectDialogFragment awdf = new AddProjectDialogFragment();
+        AddWorkstationDialogFragment awdf = new AddWorkstationDialogFragment();
         awdf.setCleanup(new Runnable() {
             @Override
             public void run() {

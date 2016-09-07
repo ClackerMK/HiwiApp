@@ -77,15 +77,18 @@ public class ProjectCursorAdapter extends CursorAdapter {
 
         ZDLVm = ((double) ZDLV) / project_count;
 
+        double ZDL = ((double)project_count) / output;
+
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
 
         tvHeader.setText(name);
-        tvBody.setText(String.format("Bestand: %d\n" + "Leistung: %d\n" + "ZDL: %s\n" + "ZDLVm: %s",
+        tvBody.setText(String.format("Bestand: %d\n" + "Leistung: %d\n" + "ZDL: %s\n" + "ZDLVm: %s\n" + "TAA: %s",
                 project_count,
                 output,
-                df.format(((double)project_count) / output),
-                df.format(ZDLVm)));
+                df.format(ZDL),
+                df.format(ZDLVm),
+                df.format((ZDL / 2) - ZDLVm)));
 
         view.setTag(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
     }

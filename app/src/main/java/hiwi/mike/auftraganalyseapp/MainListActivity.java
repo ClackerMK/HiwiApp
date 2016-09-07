@@ -21,8 +21,10 @@ import hiwi.mike.auftraganalyseapp.CursorAdapter.ProjectCursorAdapter;
 import hiwi.mike.auftraganalyseapp.CursorAdapter.WorkbookCursorAdapter;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
-import hiwi.mike.auftraganalyseapp.DialogFragments.AddProjectDialogFragment;
+import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkstationDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkbookDialogFragment;
+import hiwi.mike.auftraganalyseapp.DialogFragments.EditWorkbookDialogFragment;
+import hiwi.mike.auftraganalyseapp.DialogFragments.EditWorkstationDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.OnAcceptDialogFragment;
 
 public class MainListActivity extends AppCompatActivity {
@@ -75,14 +77,14 @@ public class MainListActivity extends AppCompatActivity {
                         });
                         break;
                     case Workstations:
-                        frgmnt = new AddProjectDialogFragment();
-                        ((AddProjectDialogFragment) frgmnt).setCleanup(new Runnable() {
+                        frgmnt = new AddWorkstationDialogFragment();
+                        ((AddWorkstationDialogFragment) frgmnt).setCleanup(new Runnable() {
                             @Override
                             public void run() {
                                 reloadAll();
                             }
                         });
-                        ((AddProjectDialogFragment) frgmnt).setWorkbookID(currentWBID);
+                        ((AddWorkstationDialogFragment) frgmnt).setWorkbookID(currentWBID);
                         break;
                     case Orders:
                         Intent intent = new Intent(getBaseContext(), EditOrderActivity.class);
@@ -105,61 +107,57 @@ public class MainListActivity extends AppCompatActivity {
         {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                OnAcceptDialogFragment acceptDiaFrag = new OnAcceptDialogFragment();
                 final SQLiteDatabase db = dbHelper.getWritableDatabase();
                 Cursor crs;
-
-
-                acceptDiaFrag.setOnCleanup(new Runnable() {
-                    @Override
-                    public void run() {
-                        reloadAll();
-                    }
-                });
 
                 switch (currentTable)
                 {
                     case Workbooks:
                         final Integer WBid = (int)view.getTag();
+                        EditWorkbookDialogFragment wbEditFragment = new EditWorkbookDialogFragment();
 
                         crs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_BY_ID(WBid),null);
                         crs.moveToFirst();
-                        acceptDiaFrag.setMessage("Wirklich die Mappe " +
-                                crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME)) +
-                                " und alle dazugehörigen Projekte und Aufträge löschen?");
 
-                        acceptDiaFrag.setOnAccept(new Runnable() {
+                        wbEditFragment.setWorkbook_id(WBid);
+                        wbEditFragment.setName(crs.getString(crs.getColumnIndexOrThrow(
+                                WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME)));
+                        wbEditFragment.setCleanup(new Runnable() {
                             @Override
                             public void run() {
-                                db.delete(WorkbookContract.WorkbookEntry.TABLE_NAME,
-                                        WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_ID + "=?",
-                                        new String[] {WBid.toString()});
+                                reloadAll();
                             }
                         });
+
+                        wbEditFragment.show(getFragmentManager(), null);
                         break;
                     case Workstations:
                         final Integer WSid = (int)view.getTag();
+                        EditWorkstationDialogFragment wsEditFragment = new EditWorkstationDialogFragment();
 
                         crs = db.rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(WSid),null);
                         crs.moveToFirst();
-                        acceptDiaFrag.setMessage("Wirklich die Arbeitsstation " +
-                                crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_NAME)) +
-                                " und alle dazugehörigen Aufträge löschen?");
 
-                        acceptDiaFrag.setOnAccept(new Runnable() {
+                        wsEditFragment.setName(crs.getString(crs.getColumnIndexOrThrow(
+                                WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME)));
+                        wsEditFragment.setOutput(crs.getInt(crs.getColumnIndexOrThrow(
+                                WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT)));
+                        wsEditFragment.setWorkstation_id(WSid);
+                        wsEditFragment.setCleanup(new Runnable() {
                             @Override
                             public void run() {
-                                db.delete(WorkbookContract.WorkstationEntry.TABLE_NAME,
-                                        WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_ID + "=?",
-                                        new String[] {WSid.toString()});
+                                reloadAll();
                             }
                         });
+                        wsEditFragment.show(getFragmentManager(), null);
                         break;
                     case Orders:
                         final Integer ORDid = (int)view.getTag();
+                        OnAcceptDialogFragment acceptDiaFrag = new OnAcceptDialogFragment();
 
                         crs = db.rawQuery(WorkbookContract.GET_ORDER_BY_ID(ORDid),null);
                         crs.moveToFirst();
+
                         acceptDiaFrag.setMessage("Wirklich den Auftrag " +
                                 crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_NR)) +
                                 " löschen?");
@@ -172,10 +170,15 @@ public class MainListActivity extends AppCompatActivity {
                                         new String[] {ORDid.toString()});
                             }
                         });
+                        acceptDiaFrag.setOnCleanup(new Runnable() {
+                            @Override
+                            public void run() {
+                                reloadAll();
+                            }
+                        });
+                        acceptDiaFrag.show(getFragmentManager(), null);
                         break;
                 }
-
-                acceptDiaFrag.show(getFragmentManager(), null);
 
                 return false;
             }

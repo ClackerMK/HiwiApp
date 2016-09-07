@@ -19,7 +19,7 @@ import hiwi.mike.auftraganalyseapp.R;
 /**
  * Created by dave on 16.06.16.
  */
-public class AddProjectDialogFragment extends DialogFragment {
+public class AddWorkstationDialogFragment extends DialogFragment {
 
     private Runnable onCleanup;
     private int      workbook_id;
@@ -40,7 +40,7 @@ public class AddProjectDialogFragment extends DialogFragment {
         final EditText inp_name = (EditText)layout.findViewById(R.id.name);
         final EditText inp_output = (EditText)layout.findViewById(R.id.output);
 
-        builder.setMessage("Name der neuen Maschine/Arbeitsplatz")
+        builder.setMessage("Neue/r Maschine/Arbeitsplatz")
                 .setView(layout)
                 .setPositiveButton("Hinzufügen", new DialogInterface.OnClickListener()
                 {
