@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
 public final class WorkbookContract {
     public WorkbookContract() {}
 
-    public static final int     VERSION = 9;
+    public static final int     VERSION = 10;
 
     private static final String TEXT_TYPE          = " TEXT";
     private static final String COMMA_SEP          = ",";
@@ -46,7 +46,7 @@ public final class WorkbookContract {
                 COLUMN_NAME_WORKBOOK_ID + " INTEGER" + COMMA_SEP +
                 COLUMN_NAME_ENTRY_NAME + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_LAST_OPENED + TEXT_TYPE + " DEFAULT CURRENT_TIMESTAMP" + COMMA_SEP +
-                COLUMN_NAME_OUTPUT + " INTEGER " + COMMA_SEP +
+                COLUMN_NAME_OUTPUT + " REAL " + COMMA_SEP +
                 "FOREIGN KEY (" + COLUMN_NAME_WORKBOOK_ID + ") " +
                 "REFERENCES " + WorkbookEntry.TABLE_NAME + " (" + WorkbookEntry.COLUMN_NAME_ENTRY_ID + ") ON DELETE CASCADE" +
                 ");";
