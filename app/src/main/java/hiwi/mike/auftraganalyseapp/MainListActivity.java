@@ -140,7 +140,7 @@ public class MainListActivity extends AppCompatActivity {
 
                         wsEditFragment.setName(crs.getString(crs.getColumnIndexOrThrow(
                                 WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME)));
-                        wsEditFragment.setOutput(crs.getInt(crs.getColumnIndexOrThrow(
+                        wsEditFragment.setOutput(crs.getDouble(crs.getColumnIndexOrThrow(
                                 WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT)));
                         wsEditFragment.setWorkstation_id(WSid);
                         wsEditFragment.setCleanup(new Runnable() {

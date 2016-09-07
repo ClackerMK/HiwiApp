@@ -56,7 +56,7 @@ public class ProjectCursorAdapter extends CursorAdapter {
         int ZDLV = 0;
         double ZDLVm;
 
-        int output = cursor.getInt(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT));
+        double output = cursor.getDouble(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT));
 
         while (ordersCrs.moveToNext())
         {
@@ -83,9 +83,9 @@ public class ProjectCursorAdapter extends CursorAdapter {
         df.setRoundingMode(RoundingMode.HALF_UP);
 
         tvHeader.setText(name);
-        tvBody.setText(String.format("Bestand: %d\n" + "Leistung: %d\n" + "ZDL: %s\n" + "ZDLVm: %s\n" + "TAA: %s",
+        tvBody.setText(String.format("Bestand: %d\n" + "Leistung: %s\n" + "ZDL: %s\n" + "ZDLVm: %s\n" + "TAA: %s",
                 project_count,
-                output,
+                df.format(output),
                 df.format(ZDL),
                 df.format(ZDLVm),
                 df.format((ZDL / 2) - ZDLVm)));

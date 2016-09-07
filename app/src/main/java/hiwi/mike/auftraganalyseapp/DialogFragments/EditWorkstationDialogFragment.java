@@ -23,7 +23,7 @@ public class EditWorkstationDialogFragment extends DialogFragment {
     private Runnable onCleanup;
     private int      workstation_id;
     private String   name;
-    private Integer  output;
+    private Double   output;
 
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -49,7 +49,7 @@ public class EditWorkstationDialogFragment extends DialogFragment {
                             values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME,
                                     inp_name.getText().toString());
                             values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT,
-                                    Integer.parseInt(inp_output.getText().toString()));
+                                    Double.parseDouble(inp_output.getText().toString()));
 
                             dbHelper.getWritableDatabase().update(
                                     WorkbookContract.WorkstationEntry.TABLE_NAME,
@@ -95,10 +95,6 @@ public class EditWorkstationDialogFragment extends DialogFragment {
         onCleanup = run;
     }
 
-    public int getWorkstation_id() {
-        return workstation_id;
-    }
-
     public void setWorkstation_id(int workstation_id) {
         this.workstation_id = workstation_id;
     }
@@ -107,7 +103,7 @@ public class EditWorkstationDialogFragment extends DialogFragment {
         this.name = name;
     }
 
-    public void setOutput(Integer output) {
+    public void setOutput(Double output) {
         this.output = output;
     }
 }

@@ -87,7 +87,7 @@ public final class WorkbookContract {
                 "');";
     }
 
-    public static final String INSERT_WORKSTATION(String name, int output, int wb_id)
+    public static final String INSERT_WORKSTATION(String name, double output, int wb_id)
     {
         return "INSERT INTO " + WorkstationEntry.TABLE_NAME + "(" +
                     WorkstationEntry.COLUMN_NAME_ENTRY_NAME + COMMA_SEP +

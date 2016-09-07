@@ -51,7 +51,7 @@ public class AddWorkstationDialogFragment extends DialogFragment {
                         if (inp_name.getText().length() > 0 && inp_output.getText().length() > 0 ) {
                             dbHelper.getWritableDatabase().execSQL(WorkbookContract.INSERT_WORKSTATION(
                                     inp_name.getText().toString(),
-                                    Integer.parseInt(inp_output.getText().toString()),
+                                    Double.parseDouble(inp_output.getText().toString()),
                                     workbook_id));
                             onCleanup.run();
                         } else
