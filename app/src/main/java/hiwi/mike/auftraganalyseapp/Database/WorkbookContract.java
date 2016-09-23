@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
 public final class WorkbookContract {
     public WorkbookContract() {}
 
-    public static final int     VERSION = 10;
+    public static final int     VERSION = 11;
 
     private static final String TEXT_TYPE          = " TEXT";
     private static final String COMMA_SEP          = ",";
@@ -31,7 +31,7 @@ public final class WorkbookContract {
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
     }
 
-    /* Inner class that defines the table contents of Projects */
+    /* Inner class that defines the table contents of Workstations */
     public static abstract class WorkstationEntry implements BaseColumns {
         public static final String TABLE_NAME = "Workstations";
         public static final String COLUMN_NAME_ENTRY_ID = "_id";
@@ -39,6 +39,7 @@ public final class WorkbookContract {
         public static final String COLUMN_NAME_ENTRY_NAME = "name";
         public static final String COLUMN_NAME_LAST_OPENED = "lastOpened";
         public static final String COLUMN_NAME_OUTPUT = "output";
+        public static final String COLUMN_NAME_REIHENFOLGE = "reihenfolge";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
                 "(" +
@@ -47,6 +48,7 @@ public final class WorkbookContract {
                 COLUMN_NAME_ENTRY_NAME + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_LAST_OPENED + TEXT_TYPE + " DEFAULT CURRENT_TIMESTAMP" + COMMA_SEP +
                 COLUMN_NAME_OUTPUT + " REAL " + COMMA_SEP +
+                COLUMN_NAME_REIHENFOLGE + TEXT_TYPE + COMMA_SEP +
                 "FOREIGN KEY (" + COLUMN_NAME_WORKBOOK_ID + ") " +
                 "REFERENCES " + WorkbookEntry.TABLE_NAME + " (" + WorkbookEntry.COLUMN_NAME_ENTRY_ID + ") ON DELETE CASCADE" +
                 ");";
