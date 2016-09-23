@@ -58,6 +58,12 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         {
             reihenfolge = "nicht definiert";
         }
+        String kapStrg = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_KAPSTRG));
+        if (kapStrg == null)
+        {
+            kapStrg = "nicht definiert";
+        }
+
 
         int ZDLV = 0;
         double ZDLVm;
@@ -93,15 +99,17 @@ public class WorkstationCursorAdapter extends CursorAdapter {
                 "Bestand: %d\n" +
                         "Leistung: %s\n" +
                         "Durchlaufzeit: %s\n" +
-                        "mittlere verbleibende Durchlaufzet: %s\n" +
+                        "mittlere verbleibende Durchlaufzeit: %s\n" +
                         "Terminabweihung: %s\n" +
-                        "Reihenfolgebildung: %s",
+                        "Reihenfolgebildung: %s\n" +
+                        "Kapazitätssteuerung: %s",
                 project_count,
                 df.format(output),
                 df.format(ZDL),
                 df.format(ZDLVm),
                 df.format((ZDL / 2) - ZDLVm),
-                reihenfolge));
+                reihenfolge,
+                kapStrg));
 
         view.setTag(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
     }
