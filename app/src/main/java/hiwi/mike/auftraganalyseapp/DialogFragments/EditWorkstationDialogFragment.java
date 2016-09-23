@@ -29,11 +29,14 @@ public class EditWorkstationDialogFragment extends DialogFragment implements Ada
     private String   name;
     private Double   output;
     private String   reihenfolge;
+    private String   kapstrg;
 
     private EditText inp_name;
     private EditText inp_output;
     private EditText inp_reihenfolge_other;
     private Spinner  inp_reihenfolge_spinner;
+    private EditText inp_kapstrg_other;
+    private Spinner  inp_kapstrg_spinner;
 
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -42,16 +45,22 @@ public class EditWorkstationDialogFragment extends DialogFragment implements Ada
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.editworkstationdialog, null);
 
+        // Init Basic Text Fields
         inp_name = (EditText) layout.findViewById(R.id.name);
         inp_output = (EditText) layout.findViewById(R.id.output);
+
+        inp_name.setText(name);
+        inp_output.setText(output.toString());
+
+        // Init Reihenfolge Spinner and Other Text Field
         inp_reihenfolge_other = (EditText) layout.findViewById(R.id.reihenfolge_other);
         inp_reihenfolge_spinner = (Spinner) layout.findViewById(R.id.reihenfolge_spinner);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
+        ArrayAdapter<CharSequence> ReiheAdapter = ArrayAdapter.createFromResource(context,
                 R.array.reihenfolge_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        ReiheAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        inp_reihenfolge_spinner.setAdapter(adapter);
+        inp_reihenfolge_spinner.setAdapter(ReiheAdapter);
         inp_reihenfolge_spinner.setOnItemSelectedListener(this);
         if (reihenfolge != null) {
             int pos = Helper.searchSpinnerForValue(inp_reihenfolge_spinner, reihenfolge);
@@ -66,8 +75,31 @@ public class EditWorkstationDialogFragment extends DialogFragment implements Ada
         {
             inp_reihenfolge_spinner.setSelection(getResources().getStringArray(R.array.reihenfolge_array).length - 1);
         }
-        inp_name.setText(name);
-        inp_output.setText(output.toString());
+
+        // Init KapStrg Spinner and Other Text Field
+        inp_kapstrg_other = (EditText) layout.findViewById(R.id.kapstrg_other);
+        inp_kapstrg_spinner = (Spinner) layout.findViewById(R.id.kapstrg_spinner);
+
+        ArrayAdapter<CharSequence> KapStrgAdapter = ArrayAdapter.createFromResource(context,
+                R.array.kapstrg_array, android.R.layout.simple_spinner_item);
+        KapStrgAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        inp_kapstrg_spinner.setAdapter(KapStrgAdapter);
+        inp_kapstrg_spinner.setOnItemSelectedListener(this);
+        if (kapstrg != null) {
+            int pos = Helper.searchSpinnerForValue(inp_kapstrg_spinner, kapstrg);
+            if (pos >= 0) {
+                inp_kapstrg_spinner.setSelection(pos);
+            }
+            else {
+                inp_kapstrg_spinner.setSelection(Helper.searchSpinnerForValue(inp_kapstrg_spinner, "andere:"));
+                inp_kapstrg_other.setText(kapstrg);
+            }
+        } else
+        {
+            inp_kapstrg_spinner.setSelection(getResources().getStringArray(R.array.kapstrg_array).length - 1);
+        }
+
 
         builder.setMessage("Bearbeite Maschine/Arbeitsplatz")
                 .setView(layout)
@@ -85,11 +117,21 @@ public class EditWorkstationDialogFragment extends DialogFragment implements Ada
                             if (inp_reihenfolge_spinner.getSelectedItem().equals("andere:"))
                             {
                                 values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE,
-                                        inp_reihenfolge_other.toString());
+                                        inp_reihenfolge_other.getText().toString());
                             }else if (!inp_reihenfolge_spinner.getSelectedItem().equals("nicht definiert"))
                             {
                                 values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE,
                                         (String)inp_reihenfolge_spinner.getSelectedItem());
+                            }
+
+                            if (inp_kapstrg_spinner.getSelectedItem().equals("andere:"))
+                            {
+                                values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE,
+                                        inp_kapstrg_other.getText().toString());
+                            }else if (!inp_kapstrg_spinner.getSelectedItem().equals("nicht definiert"))
+                            {
+                                values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE,
+                                        (String)inp_kapstrg_spinner.getSelectedItem());
                             }
 
                             dbHelper.getWritableDatabase().update(
@@ -136,10 +178,17 @@ public class EditWorkstationDialogFragment extends DialogFragment implements Ada
     {
         if (parent.getItemAtPosition(pos).equals("andere:"))
         {
-            inp_reihenfolge_other.setVisibility(View.VISIBLE);
+            if (parent == inp_reihenfolge_spinner)
+                inp_reihenfolge_other.setVisibility(View.VISIBLE);
+            else
+                inp_kapstrg_other.setVisibility(View.VISIBLE);
+
         } else
         {
-            inp_reihenfolge_other.setVisibility(View.INVISIBLE);
+            if (parent == inp_reihenfolge_spinner)
+                inp_reihenfolge_other.setVisibility(View.INVISIBLE);
+            else
+                inp_kapstrg_other.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -167,5 +216,9 @@ public class EditWorkstationDialogFragment extends DialogFragment implements Ada
 
     public void setReihenfolge(String reihenfolge) {
         this.reihenfolge = reihenfolge;
+    }
+
+    public void setKapstrg(String kapstrg) {
+        this.kapstrg = kapstrg;
     }
 }

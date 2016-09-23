@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="reihenfolge_array">
-        <item>FIFO</item>
-        <item>nach Plan-Endtermin</item>
-        <item>nach Plan-Starttermin</item>
-        <item>Schlupfzeit</item>
-        <item>Rüstoptimierend</item>
+    <string-array name="kapstrg_array">
+        <item>Rückstandsregelung</item>
         <item>andere:</item>
         <item>nicht definiert</item>
     </string-array>
