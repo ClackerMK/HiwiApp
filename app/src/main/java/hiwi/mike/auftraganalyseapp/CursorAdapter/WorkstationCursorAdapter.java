@@ -89,7 +89,13 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         df.setRoundingMode(RoundingMode.HALF_UP);
 
         tvHeader.setText(name);
-        tvBody.setText(String.format("Bestand: %d\n" + "Leistung: %s\n" + "ZDL: %s\n" + "ZDLVm: %s\n" + "TAA: %s\n" + "Reihenfolgebildung: %s",
+        tvBody.setText(String.format(
+                "Bestand: %d\n" +
+                        "Leistung: %s\n" +
+                        "Durchlaufzeit: %s\n" +
+                        "mittlere verbleibende Durchlaufzet: %s\n" +
+                        "Terminabweihung: %s\n" +
+                        "Reihenfolgebildung: %s",
                 project_count,
                 df.format(output),
                 df.format(ZDL),
