@@ -106,16 +106,22 @@ public class AddWorkstationDialogFragment extends DialogFragment implements Adap
                             {
                                 values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE,
                                         (String)inp_reihenfolge_spinner.getSelectedItem());
+                            }else
+                            {
+                                values.putNull(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE);
                             }
 
                             if (inp_kapstrg_spinner.getSelectedItem().equals("andere:"))
                             {
-                                values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE,
+                                values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_KAPSTRG,
                                         inp_kapstrg_other.getText().toString());
                             }else if (!inp_kapstrg_spinner.getSelectedItem().equals("nicht definiert"))
                             {
-                                values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE,
+                                values.put(WorkbookContract.WorkstationEntry.COLUMN_NAME_KAPSTRG,
                                         (String)inp_kapstrg_spinner.getSelectedItem());
+                            }else
+                            {
+                                values.putNull(WorkbookContract.WorkstationEntry.COLUMN_NAME_KAPSTRG);
                             }
 
                             dbHelper.getWritableDatabase().insert(
@@ -152,9 +158,9 @@ public class AddWorkstationDialogFragment extends DialogFragment implements Adap
         } else
         {
             if (parent == inp_reihenfolge_spinner)
-                inp_reihenfolge_other.setVisibility(View.INVISIBLE);
+                inp_reihenfolge_other.setVisibility(View.GONE);
             else
-                inp_kapstrg_other.setVisibility(View.INVISIBLE);
+                inp_kapstrg_other.setVisibility(View.GONE);
         }
     }
 

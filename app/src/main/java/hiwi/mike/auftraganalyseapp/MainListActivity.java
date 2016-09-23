@@ -144,7 +144,10 @@ public class MainListActivity extends AppCompatActivity {
                                 WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT)));
                         wsEditFragment.setReihenfolge(crs.getString(crs.getColumnIndexOrThrow(
                                 WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE)));
+                        wsEditFragment.setKapstrg(crs.getString(crs.getColumnIndexOrThrow(
+                                WorkbookContract.WorkstationEntry.COLUMN_NAME_KAPSTRG)));
                         wsEditFragment.setWorkstation_id(WSid);
+
                         wsEditFragment.setCleanup(new Runnable() {
                             @Override
                             public void run() {

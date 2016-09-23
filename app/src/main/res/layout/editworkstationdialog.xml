@@ -19,7 +19,9 @@
     <EditText
         android:id="@+id/name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:singleLine="true"/>
 
     <TextView
         android:id="@+id/textView7"
@@ -33,7 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:maxLines="1"
+        android:singleLine="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,13 +55,15 @@
         android:id="@+id/reihenfolge_other"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"/>
+        android:visibility="gone"
+        android:maxLines="1"
+        android:singleLine="true"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Kapazitätensteuerung"
+        android:text="Kapazitätssteuerung"
         android:id="@+id/textView9" />
 
     <Spinner
@@ -69,5 +75,7 @@
         android:id="@+id/kapstrg_other"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"/>
+        android:visibility="gone"
+        android:maxLines="1"
+        android:singleLine="true"/>
 </LinearLayout>
