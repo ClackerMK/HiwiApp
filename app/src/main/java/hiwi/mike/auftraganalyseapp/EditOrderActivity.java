@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,6 +107,22 @@ public class EditOrderActivity extends AppCompatActivity {
             assert tview != null;
             tview.setText(Helper.DMYFormat.format(new Date()));
         }
+
+        TextView dateField = (TextView)findViewById(R.id.targetdate_text);
+        dateField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDate(v);
+            }
+        });
+
+        dateField = (TextView)findViewById(R.id.docdate_text);
+        dateField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDate(v);
+            }
+        });
 
         Cursor crs = dbHelper.getReadableDatabase().
                 rawQuery(WorkbookContract.GET_WORKSTATION_BY_ID(PrjID),null);

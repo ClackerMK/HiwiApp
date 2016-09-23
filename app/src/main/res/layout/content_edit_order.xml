@@ -55,13 +55,16 @@
             android:text="Plan-Fertigstellung"
             android:id="@+id/textView3" />
 
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="date"
             android:ems="10"
             android:id="@+id/targetdate_text"
-            android:onClick="selectDate"/>
+            android:textColor="?attr/editTextColor"
+            android:background="?attr/editTextBackground"
+            android:gravity="center_vertical"
+            
+            android:textAppearance="?android:attr/textAppearanceMediumInverse"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -70,13 +73,15 @@
             android:text="Eintragsdatum"
             android:id="@+id/textView5" />
 
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="date"
             android:ems="10"
             android:id="@+id/docdate_text"
-            android:onClick="selectDate"/>
+            android:textColor="?attr/editTextColor"
+            android:background="?attr/editTextBackground"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceMediumInverse"/>
 
         <TextView
             android:layout_width="wrap_content"
