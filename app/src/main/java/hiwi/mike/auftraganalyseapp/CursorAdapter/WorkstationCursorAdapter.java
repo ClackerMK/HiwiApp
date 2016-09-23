@@ -22,12 +22,12 @@ import hiwi.mike.auftraganalyseapp.R;
 /**
  * Created by dave on 16.06.16.
  */
-public class ProjectCursorAdapter extends CursorAdapter {
+public class WorkstationCursorAdapter extends CursorAdapter {
 
     WorkbookDbHelper dbHelper;
     SQLiteDatabase sqlDB;
 
-    public ProjectCursorAdapter(Context context, Cursor cursor, int flags)
+    public WorkstationCursorAdapter(Context context, Cursor cursor, int flags)
     {
         super(context, cursor, 0);
 
@@ -52,6 +52,12 @@ public class ProjectCursorAdapter extends CursorAdapter {
 
         Cursor ordersCrs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(
                 cursor.getInt(cursor.getColumnIndexOrThrow("_id"))),null);
+
+        String reihenfolge = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE));
+        if (reihenfolge == null)
+        {
+            reihenfolge = "nicht definiert";
+        }
 
         int ZDLV = 0;
         double ZDLVm;
@@ -83,12 +89,13 @@ public class ProjectCursorAdapter extends CursorAdapter {
         df.setRoundingMode(RoundingMode.HALF_UP);
 
         tvHeader.setText(name);
-        tvBody.setText(String.format("Bestand: %d\n" + "Leistung: %s\n" + "ZDL: %s\n" + "ZDLVm: %s\n" + "TAA: %s",
+        tvBody.setText(String.format("Bestand: %d\n" + "Leistung: %s\n" + "ZDL: %s\n" + "ZDLVm: %s\n" + "TAA: %s\n" + "Reihenfolgebildung: %s",
                 project_count,
                 df.format(output),
                 df.format(ZDL),
                 df.format(ZDLVm),
-                df.format((ZDL / 2) - ZDLVm)));
+                df.format((ZDL / 2) - ZDLVm),
+                reihenfolge));
 
         view.setTag(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
     }

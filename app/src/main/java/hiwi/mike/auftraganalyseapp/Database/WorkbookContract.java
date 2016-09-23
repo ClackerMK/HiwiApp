@@ -89,15 +89,17 @@ public final class WorkbookContract {
                 "');";
     }
 
-    public static final String INSERT_WORKSTATION(String name, double output, int wb_id)
+    public static final String INSERT_WORKSTATION(String name, double output, String reihenfolge,int wb_id)
     {
         return "INSERT INTO " + WorkstationEntry.TABLE_NAME + "(" +
                     WorkstationEntry.COLUMN_NAME_ENTRY_NAME + COMMA_SEP +
                     WorkstationEntry.COLUMN_NAME_OUTPUT + COMMA_SEP +
+                    WorkstationEntry.COLUMN_NAME_REIHENFOLGE + COMMA_SEP +
                     WorkstationEntry.COLUMN_NAME_WORKBOOK_ID + ")" +
                 " VALUES (" +
                     "'" + name + "'" + COMMA_SEP +
                     "'" + output + "'" + COMMA_SEP +
+                    reihenfolge + COMMA_SEP +
                     "'" + wb_id + "'" +
                 ");";
     }
@@ -132,6 +134,7 @@ public final class WorkbookContract {
         return "SELECT " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + " as _id" + COMMA_SEP +
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_NAME + " as " + WorkstationEntry.COLUMN_NAME_ENTRY_NAME  + COMMA_SEP +
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_OUTPUT + " as " + WorkstationEntry.COLUMN_NAME_OUTPUT + COMMA_SEP +
+                WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_REIHENFOLGE + " as " + WorkstationEntry.COLUMN_NAME_REIHENFOLGE + COMMA_SEP +
                 " COUNT(" + OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_ENTRY_ID + ") as count" +
                 //ProjectEntry.TABLE_NAME + "." + ProjectEntry.COLUMN_NAME_LAST_OPENED + " as " + ProjectEntry.COLUMN_NAME_LAST_OPENED +
                 " FROM " + WorkstationEntry.TABLE_NAME +

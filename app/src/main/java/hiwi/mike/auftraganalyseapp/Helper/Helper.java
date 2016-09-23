@@ -1,5 +1,7 @@
 package hiwi.mike.auftraganalyseapp.Helper;
 
+import android.widget.Spinner;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -81,5 +83,15 @@ public class Helper {
             e.printStackTrace();
             return "";
         }
+    }
+
+    public static Integer searchSpinnerForValue(Spinner spinner, String value)
+    {
+        for (int i = 0; i < spinner.getCount(); i++)
+        {
+            if (spinner.getItemAtPosition(i).equals(value))
+                return i;
+        }
+        return -1;
     }
 }

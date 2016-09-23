@@ -17,7 +17,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import hiwi.mike.auftraganalyseapp.CursorAdapter.OrderCursorAdapter;
-import hiwi.mike.auftraganalyseapp.CursorAdapter.ProjectCursorAdapter;
+import hiwi.mike.auftraganalyseapp.CursorAdapter.WorkstationCursorAdapter;
 import hiwi.mike.auftraganalyseapp.CursorAdapter.WorkbookCursorAdapter;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
@@ -142,6 +142,8 @@ public class MainListActivity extends AppCompatActivity {
                                 WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME)));
                         wsEditFragment.setOutput(crs.getDouble(crs.getColumnIndexOrThrow(
                                 WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT)));
+                        wsEditFragment.setReihenfolge(crs.getString(crs.getColumnIndexOrThrow(
+                                WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE)));
                         wsEditFragment.setWorkstation_id(WSid);
                         wsEditFragment.setCleanup(new Runnable() {
                             @Override
@@ -289,7 +291,7 @@ public class MainListActivity extends AppCompatActivity {
                 db.update(WorkbookContract.WorkbookEntry.TABLE_NAME,,)
                 */
                 crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(currentWBID), null);
-                adapter = new ProjectCursorAdapter(getBaseContext(), crs, 0);
+                adapter = new WorkstationCursorAdapter(getBaseContext(), crs, 0);
 
                 titleCrs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_BY_ID(currentWBID), null);
                 titleCrs.moveToFirst();
