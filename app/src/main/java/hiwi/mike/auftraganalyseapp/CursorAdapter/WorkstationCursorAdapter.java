@@ -9,14 +9,27 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
-import hiwi.mike.auftraganalyseapp.Helper.Helper;
+import hiwi.mike.auftraganalyseapp.Helper.DateHelper;
+import hiwi.mike.auftraganalyseapp.Helper.LimitXAxisFormatter;
+import hiwi.mike.auftraganalyseapp.Helper.MyValueFormatter;
 import hiwi.mike.auftraganalyseapp.R;
 
 /**
@@ -26,6 +39,9 @@ public class WorkstationCursorAdapter extends CursorAdapter {
 
     WorkbookDbHelper dbHelper;
     SQLiteDatabase sqlDB;
+
+    final Integer minHisto = -5;
+    final Integer maxHisto = 5;
 
     public WorkstationCursorAdapter(Context context, Cursor cursor, int flags)
     {
@@ -38,7 +54,7 @@ public class WorkstationCursorAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent)
     {
-        return LayoutInflater.from(context).inflate(R.layout.listitem, parent, false);
+        return LayoutInflater.from(context).inflate(R.layout.listitem_histo, parent, false);
     }
 
     @Override
@@ -70,22 +86,78 @@ public class WorkstationCursorAdapter extends CursorAdapter {
 
         double output = cursor.getDouble(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT));
 
+        int TAA;
+        HashMap<Integer, Integer> taaMap = new HashMap();
+        List<BarEntry> entries = new ArrayList<>();
+
+
         while (ordersCrs.moveToNext())
         {
             Date documentedDate, targetDate;
             try {
-                documentedDate = Helper.ISOFormat.parse(
+                documentedDate = DateHelper.ISOFormat.parse(
                         ordersCrs.getString(ordersCrs.getColumnIndexOrThrow(
                                 WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)));
-                targetDate = Helper.ISOFormat.parse(
+                targetDate = DateHelper.ISOFormat.parse(
                         ordersCrs.getString(ordersCrs.getColumnIndexOrThrow(
                                 WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)));
-                ZDLV += Helper.daysBetween(
-                        Helper.DateToCalendar(targetDate), Helper.DateToCalendar(documentedDate));
+
+
+                TAA = DateHelper.daysBetween(
+                        DateHelper.DateToCalendar(documentedDate), DateHelper.DateToCalendar(targetDate));
+                ZDLV += TAA;
+
+
+                if (TAA < minHisto)
+                    TAA = minHisto - 1;
+                else if (TAA > maxHisto)
+                    TAA = maxHisto + 1;
+
+                if (taaMap.get(TAA) != null)
+                {
+                    taaMap.put(TAA, taaMap.get(TAA) + 1);
+                } else
+                {
+                    taaMap.put(TAA, 1);
+                }
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
+
+        for (Map.Entry<Integer, Integer> entry: taaMap.entrySet())
+        {
+            entries.add(new BarEntry(entry.getKey(), entry.getValue()));
+        }
+        BarDataSet dataSet = new BarDataSet(entries, "Terminabweichung");
+        //dataSet.setBarBorderWidth(1f);
+        /*dataSet.setBarSpacePercent(0.1f);*/
+
+        /*
+        TBA STYLING
+         */
+        BarChart chart = (BarChart) view.findViewById(R.id.hist_chart);
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.9f);
+        barData.setValueFormatter(new MyValueFormatter());
+        chart.setData(barData);
+        chart.setDragEnabled(false);
+        chart.setScaleEnabled(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setPinchZoom(false);
+
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.getXAxis().setGranularity(1f);
+        chart.getAxisLeft().setGranularity(1f);
+        chart.getAxisLeft().setAxisMinValue(0);
+        chart.getAxisRight().setEnabled(false);
+        chart.getXAxis().setValueFormatter(new LimitXAxisFormatter(minHisto, maxHisto));
+        /*chart.getXAxis().setAxisMinValue(minHisto-1);
+        chart.getXAxis().setAxisMaxValue(maxHisto+1);*/
+        chart.animateY(150, Easing.EasingOption.EaseOutCirc);
+
+        chart.setDescription("Terminabweichung");
 
         ZDLVm = ((double) ZDLV) / project_count;
 

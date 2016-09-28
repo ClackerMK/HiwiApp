@@ -7,18 +7,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
-import hiwi.mike.auftraganalyseapp.Helper.Helper;
 import hiwi.mike.auftraganalyseapp.R;
 
 /**

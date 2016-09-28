@@ -16,7 +16,7 @@ import android.widget.Spinner;
 
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
-import hiwi.mike.auftraganalyseapp.Helper.Helper;
+import hiwi.mike.auftraganalyseapp.Helper.DateHelper;
 import hiwi.mike.auftraganalyseapp.R;
 
 /**
@@ -63,12 +63,12 @@ public class EditWorkstationDialogFragment extends DialogFragment implements Ada
         inp_reihenfolge_spinner.setAdapter(ReiheAdapter);
         inp_reihenfolge_spinner.setOnItemSelectedListener(this);
         if (reihenfolge != null) {
-            int pos = Helper.searchSpinnerForValue(inp_reihenfolge_spinner, reihenfolge);
+            int pos = DateHelper.searchSpinnerForValue(inp_reihenfolge_spinner, reihenfolge);
             if (pos >= 0) {
                 inp_reihenfolge_spinner.setSelection(pos);
             }
             else {
-                inp_reihenfolge_spinner.setSelection(Helper.searchSpinnerForValue(inp_reihenfolge_spinner, "andere:"));
+                inp_reihenfolge_spinner.setSelection(DateHelper.searchSpinnerForValue(inp_reihenfolge_spinner, "andere:"));
                 inp_reihenfolge_other.setText(reihenfolge);
             }
         } else
@@ -87,12 +87,12 @@ public class EditWorkstationDialogFragment extends DialogFragment implements Ada
         inp_kapstrg_spinner.setAdapter(KapStrgAdapter);
         inp_kapstrg_spinner.setOnItemSelectedListener(this);
         if (kapstrg != null) {
-            int pos = Helper.searchSpinnerForValue(inp_kapstrg_spinner, kapstrg);
+            int pos = DateHelper.searchSpinnerForValue(inp_kapstrg_spinner, kapstrg);
             if (pos >= 0) {
                 inp_kapstrg_spinner.setSelection(pos);
             }
             else {
-                inp_kapstrg_spinner.setSelection(Helper.searchSpinnerForValue(inp_kapstrg_spinner, "andere:"));
+                inp_kapstrg_spinner.setSelection(DateHelper.searchSpinnerForValue(inp_kapstrg_spinner, "andere:"));
                 inp_kapstrg_other.setText(kapstrg);
             }
         } else

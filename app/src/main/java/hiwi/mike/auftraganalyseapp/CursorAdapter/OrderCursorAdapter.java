@@ -10,12 +10,10 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
-import hiwi.mike.auftraganalyseapp.Helper.Helper;
+import hiwi.mike.auftraganalyseapp.Helper.DateHelper;
 import hiwi.mike.auftraganalyseapp.R;
 
 /**
@@ -41,7 +39,7 @@ public class OrderCursorAdapter extends CursorAdapter {
 
         String no = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_NR));
         String vorgabeDatum = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE));
-        DateFormat format = (DateFormat)Helper.ISOFormat.clone();
+        DateFormat format = (DateFormat) DateHelper.ISOFormat.clone();
         Date dVorgabeDatum = null;
         Date dDocumentDatum = null;
         try {
@@ -51,8 +49,8 @@ public class OrderCursorAdapter extends CursorAdapter {
             e.printStackTrace();
         }
 
-        int daysDifference = Helper.daysBetween(Helper.DateToCalendar(dVorgabeDatum),
-                                                Helper.DateToCalendar(dDocumentDatum));
+        int daysDifference = DateHelper.daysBetween(DateHelper.DateToCalendar(dDocumentDatum),
+                                                DateHelper.DateToCalendar(dVorgabeDatum));
 
         String zeit = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TIME));
         String wip = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_WIP));
@@ -63,7 +61,7 @@ public class OrderCursorAdapter extends CursorAdapter {
                 "ZDLV: %d\n" +
                 "Zeit: %s\n" +
                 "Wird bearbeitet: %s",
-                Helper.DMYFormat.format(dVorgabeDatum), Helper.DMYFormat.format(dDocumentDatum), daysDifference, zeit, wip));
+                DateHelper.DMYFormat.format(dVorgabeDatum), DateHelper.DMYFormat.format(dDocumentDatum), daysDifference, zeit, wip));
 
         view.setTag(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
     }

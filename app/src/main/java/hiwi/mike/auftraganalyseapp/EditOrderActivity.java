@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +23,7 @@ import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkstationDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.DatePickerFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.TimePickerFragment;
-import hiwi.mike.auftraganalyseapp.Helper.Helper;
+import hiwi.mike.auftraganalyseapp.Helper.DateHelper;
 
 public class EditOrderActivity extends AppCompatActivity {
 
@@ -89,7 +88,7 @@ public class EditOrderActivity extends AppCompatActivity {
 
             tview = (TextView) findViewById(R.id.targetdate_text);
             assert tview != null;
-            tview.setText(Helper.ISOtoDMY(cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE))));
+            tview.setText(DateHelper.ISOtoDMY(cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE))));
 
             tview = (TextView) findViewById(R.id.time_text);
             assert tview != null;
@@ -97,7 +96,7 @@ public class EditOrderActivity extends AppCompatActivity {
 
             tview = (TextView) findViewById(R.id.docdate_text);
             assert tview != null;
-            tview.setText(Helper.ISOtoDMY(cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE))));
+            tview.setText(DateHelper.ISOtoDMY(cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE))));
 
             CheckBox chkBox = (CheckBox) findViewById(R.id.checkBox);
             assert chkBox != null;
@@ -105,7 +104,7 @@ public class EditOrderActivity extends AppCompatActivity {
         } else {
             TextView tview = (TextView) findViewById(R.id.docdate_text);
             assert tview != null;
-            tview.setText(Helper.DMYFormat.format(new Date()));
+            tview.setText(DateHelper.DMYFormat.format(new Date()));
         }
 
         TextView dateField = (TextView)findViewById(R.id.targetdate_text);
@@ -205,8 +204,8 @@ public class EditOrderActivity extends AppCompatActivity {
                 ws_id);
 
 
-        if (!Helper.isValidDate(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)) ||
-                !Helper.isValidDate(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE))) {
+        if (!DateHelper.isValidDate(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)) ||
+                !DateHelper.isValidDate(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE))) {
             Toast toast = Toast.makeText(getApplicationContext(), "Fehlerhafter Datumseintrag!", Toast.LENGTH_SHORT);
             toast.show();
         }
@@ -214,9 +213,9 @@ public class EditOrderActivity extends AppCompatActivity {
         {
 
             vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE,
-                    Helper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)));
+                    DateHelper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)));
             vals.put(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE,
-                    Helper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)));
+                    DateHelper.DMYtoISO(vals.getAsString(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)));
 
 
             if (newOrder)

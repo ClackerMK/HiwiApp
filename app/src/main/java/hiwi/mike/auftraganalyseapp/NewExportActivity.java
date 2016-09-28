@@ -16,9 +16,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
@@ -28,10 +26,9 @@ import java.util.TimeZone;
 import hiwi.mike.auftraganalyseapp.CursorAdapter.ExportExpandableListAdapater;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
-import hiwi.mike.auftraganalyseapp.Helper.Helper;
+import hiwi.mike.auftraganalyseapp.Helper.DateHelper;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
-import jxl.write.DateFormats;
 import jxl.write.DateTime;
 import jxl.write.Formula;
 import jxl.write.Label;
@@ -41,7 +38,6 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
-import jxl.write.biff.DateRecord;
 
 public class NewExportActivity extends AppCompatActivity {
 
@@ -313,7 +309,7 @@ public class NewExportActivity extends AppCompatActivity {
                     crs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(workstations[y]),null);
                     crs.moveToFirst();
 
-                    SimpleDateFormat isoForm = (SimpleDateFormat)Helper.ISOFormat.clone();
+                    SimpleDateFormat isoForm = (SimpleDateFormat) DateHelper.ISOFormat.clone();
                     isoForm.setTimeZone(TimeZone.getTimeZone("GMT"));
 
                     int a = 1;

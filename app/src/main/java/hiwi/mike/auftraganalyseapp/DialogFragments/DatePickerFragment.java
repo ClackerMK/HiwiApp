@@ -8,15 +8,13 @@ import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import hiwi.mike.auftraganalyseapp.Helper.Helper;
+import hiwi.mike.auftraganalyseapp.Helper.DateHelper;
 
 /**
  * Created by dave on 21.07.16.
@@ -39,15 +37,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
 
 
-        if (Helper.isValidDate(targetText.getText().toString())) {
+        if (DateHelper.isValidDate(targetText.getText().toString())) {
 
             Date date = null;
             try {
-                date = Helper.DMYFormat.parse(targetText.getText().toString());
+                date = DateHelper.DMYFormat.parse(targetText.getText().toString());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            Calendar cal = Helper.DateToCalendar(date);
+            Calendar cal = DateHelper.DateToCalendar(date);
 
             d = cal.get(Calendar.DAY_OF_MONTH);
             m = cal.get(Calendar.MONTH);

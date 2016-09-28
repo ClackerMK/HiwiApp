@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by dave on 16.08.16.
  */
-public class Helper {
+public class DateHelper {
     public static final SimpleDateFormat DMYFormat = new SimpleDateFormat("dd.MM.yyyy");
     public static final SimpleDateFormat ISOFormat = new SimpleDateFormat("yyyy-MM-dd");
 
