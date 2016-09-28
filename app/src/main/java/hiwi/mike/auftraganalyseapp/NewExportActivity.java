@@ -16,15 +16,24 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.TimeZone;
 
 import hiwi.mike.auftraganalyseapp.CursorAdapter.ExportExpandableListAdapater;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
+import hiwi.mike.auftraganalyseapp.Helper.Helper;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
+import jxl.write.DateFormats;
+import jxl.write.DateTime;
+import jxl.write.Formula;
 import jxl.write.Label;
 import jxl.write.Number;
 import jxl.write.WritableCellFormat;
@@ -32,6 +41,7 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import jxl.write.biff.DateRecord;
 
 public class NewExportActivity extends AppCompatActivity {
 
@@ -179,6 +189,7 @@ public class NewExportActivity extends AppCompatActivity {
             Log.d("export XSL", "no external Staorage");
             return;
         }
+        final int max_size = 65536;
 
 
         WorkbookDbHelper dbHelper = new WorkbookDbHelper(this);
@@ -194,6 +205,7 @@ public class NewExportActivity extends AppCompatActivity {
         }
         WritableFont arialBoldFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
         WritableCellFormat arialBoldFormat = new WritableCellFormat(arialBoldFont);
+
         try {
             arialBoldFormat.setWrap(true);
         } catch (WriteException e) {
@@ -267,39 +279,65 @@ public class NewExportActivity extends AppCompatActivity {
                             WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_NAME));
                     worksheet = workbook.createSheet(worksheetName, Integer.MAX_VALUE);
 
-                    // Add caption
                     try {
+                        // Add caption
                         worksheet.addCell(new Label(0, 0, "#", arialBoldFormat));
                         worksheet.addCell(new Label(1, 0, "Zieldatum", arialBoldFormat));
-                        worksheet.addCell(new Label(2, 0, "ZAU", arialBoldFormat));
-                        worksheet.addCell(new Label(3, 0, "WIP", arialBoldFormat));
+                        worksheet.addCell(new Label(2, 0, "Eintragsdatum", arialBoldFormat));
+                        worksheet.addCell(new Label(3, 0, "ZDLV", arialBoldFormat));
+                        worksheet.addCell(new Label(4, 0, "ZAU", arialBoldFormat));
+                        worksheet.addCell(new Label(5, 0, "WIP", arialBoldFormat));
+
+                        // Add Workstation Info
+                        worksheet.addCell(new Label(6, 0, "Leistung"));
+                        worksheet.addCell(new Label(6, 1, "Durchlaufzeit"));
+                        worksheet.addCell(new Label(6, 2, "mittlere verbleibende Durchlaufzeit"));
+                        worksheet.addCell(new Label(6, 3, "Terminabweichung"));
+                        worksheet.addCell(new Label(6, 4, "Reihenfolgebildung"));
+                        worksheet.addCell(new Label(6, 5, "Kapazitätssteuerung"));
+
+                        worksheet.addCell(new Number(7, 0, crs.getInt(crs.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_OUTPUT))));
+                        worksheet.addCell(new Number(7, 1, crs.getInt(crs.getColumnIndexOrThrow("count"))));
+                        worksheet.addCell(new Formula(7, 2, "SUMME(D2:D"+String.valueOf(max_size)+") / H2"));
+                        worksheet.addCell(new Formula(7, 3, "(H2 /2) - H3"));
+                        worksheet.addCell(new Label(7, 4, crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE))));
+                        worksheet.addCell(new Label(7, 5, crs.getString(crs.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_KAPSTRG))));
+
                     }catch (WriteException e)
                     {
                         e.printStackTrace();
                     }
+
+
+
                     crs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(workstations[y]),null);
                     crs.moveToFirst();
+
+                    SimpleDateFormat isoForm = (SimpleDateFormat)Helper.ISOFormat.clone();
+                    isoForm.setTimeZone(TimeZone.getTimeZone("GMT"));
+
                     int a = 1;
                     while (!crs.isAfterLast()) {
                         try {
                             worksheet.addCell(new Label(0, a,
                                     crs.getString(crs.getColumnIndexOrThrow(
-                                            WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_NR)),
-                                    arialFormat));
-                            worksheet.addCell(new Label(1, a,
-                                    crs.getString(crs.getColumnIndexOrThrow(
-                                            WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)),
-                                    arialFormat));
+                                            WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_NR))));
+                            Date d1 = isoForm.parse(crs.getString(crs.getColumnIndexOrThrow(
+                                    WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TARGET_DATE)));
+                            Date d2 = isoForm.parse(crs.getString(crs.getColumnIndexOrThrow(
+                                    WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_DOCUMENTED_DATE)));
+                            worksheet.addCell(new DateTime(1, a, d1, DateTime.GMT));
+                            worksheet.addCell(new DateTime(2, a, d2, DateTime.GMT));
+                            worksheet.addCell(new Formula(3, a,
+                                    "B" + String.valueOf(a + 1) + "-C" + String.valueOf(a+1)));
 
-                            worksheet.addCell(new Label(2, a,
+                            worksheet.addCell(new Label(4, a,
                                     crs.getString(crs.getColumnIndexOrThrow(
-                                            WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TIME)),
-                                    arialFormat));
-                            worksheet.addCell(new Number(3, a,
+                                            WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TIME))));
+                            worksheet.addCell(new Number(5, a,
                                     crs.getInt(crs.getColumnIndexOrThrow(
-                                            WorkbookContract.OrderEntry.COLUMN_NAME_WIP)),
-                                    arialFormat));
-                        } catch (WriteException e) {
+                                            WorkbookContract.OrderEntry.COLUMN_NAME_WIP))));
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                         a++;

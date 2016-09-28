@@ -63,7 +63,7 @@
             android:textColor="?attr/editTextColor"
             android:background="?attr/editTextBackground"
             android:gravity="center_vertical"
-            
+
             android:textAppearance="?android:attr/textAppearanceMediumInverse"/>
 
         <TextView

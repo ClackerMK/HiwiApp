@@ -128,7 +128,14 @@ public final class WorkbookContract {
 
     public static final String GET_WORKSTATION_BY_ID(int id)
     {
-        return "SELECT * FROM " + WorkstationEntry.TABLE_NAME + " Where " + WorkstationEntry.COLUMN_NAME_ENTRY_ID + " = " + id + ";";
+        return "SELECT *" + COMMA_SEP +
+                "COUNT(" + OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_ENTRY_ID + ") as count" +
+                " FROM " + WorkstationEntry.TABLE_NAME +
+                " LEFT OUTER JOIN " + OrderEntry.TABLE_NAME +
+                " ON " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + " = " +
+                OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID +
+                " Where " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + " = " + id +
+                " GROUP BY " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + ";";
     }
 
     public static final String GET_WORKSTATIONS_BY_WORKBOOK(int id)
