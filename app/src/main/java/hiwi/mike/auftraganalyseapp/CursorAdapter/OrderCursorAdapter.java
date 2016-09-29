@@ -49,8 +49,8 @@ public class OrderCursorAdapter extends CursorAdapter {
             e.printStackTrace();
         }
 
-        int daysDifference = DateHelper.daysBetween(DateHelper.DateToCalendar(dDocumentDatum),
-                                                DateHelper.DateToCalendar(dVorgabeDatum));
+        int daysDifference = DateHelper.daysBetween(DateHelper.DateToCalendar(dVorgabeDatum),
+                                                DateHelper.DateToCalendar(dDocumentDatum));
 
         String zeit = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_TIME));
         String wip = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.OrderEntry.COLUMN_NAME_WIP));

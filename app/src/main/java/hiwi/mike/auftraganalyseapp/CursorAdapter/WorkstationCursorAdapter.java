@@ -104,7 +104,7 @@ public class WorkstationCursorAdapter extends CursorAdapter {
 
 
                 TAA = DateHelper.daysBetween(
-                        DateHelper.DateToCalendar(documentedDate), DateHelper.DateToCalendar(targetDate));
+                        DateHelper.DateToCalendar(targetDate), DateHelper.DateToCalendar(documentedDate));
                 ZDLV += TAA;
 
 

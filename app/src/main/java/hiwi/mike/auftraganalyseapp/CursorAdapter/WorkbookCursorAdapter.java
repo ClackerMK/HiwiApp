@@ -153,9 +153,9 @@ public class WorkbookCursorAdapter extends CursorAdapter{
                                 e.printStackTrace();
                             }
 
-                            if (DateHelper.daysBetween(DateHelper.DateToCalendar(current_documentedDate),
-                                    DateHelper.DateToCalendar(current_targetDate)) < DateHelper.daysBetween(DateHelper.DateToCalendar(new_documentedDate),
-                                    DateHelper.DateToCalendar(new_targetdate)))
+                            if (DateHelper.daysBetween(DateHelper.DateToCalendar(current_targetDate),
+                                    DateHelper.DateToCalendar(current_documentedDate)) > DateHelper.daysBetween(DateHelper.DateToCalendar(new_targetdate),
+                                    DateHelper.DateToCalendar(new_documentedDate)))
                             {
                                 current_overlooked++;
                             }
