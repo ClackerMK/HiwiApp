@@ -213,7 +213,7 @@ public class WorkbookCursorAdapter extends CursorAdapter{
 
         chart.getAxisRight().setEnabled(false);
         chart.getAxisLeft().setGranularity(1f);
-        chart.getAxisLeft().setAxisMinValue(-1);
+        chart.getAxisLeft().setAxisMinValue(-0.5f);
         chart.getAxisLeft().setAxisMaxValue(Math.max(5, Ints.max(entry_nums)));
         chart.getAxisLeft().setDrawLabels(true);
 
