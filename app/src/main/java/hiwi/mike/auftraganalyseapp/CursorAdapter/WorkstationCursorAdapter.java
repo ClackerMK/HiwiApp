@@ -11,10 +11,16 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.ScatterChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.ScatterData;
+import com.github.mikephil.charting.data.ScatterDataSet;
+import com.google.common.primitives.Ints;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -43,8 +49,7 @@ public class WorkstationCursorAdapter extends CursorAdapter {
     final Integer minHisto = -5;
     final Integer maxHisto = 5;
 
-    public WorkstationCursorAdapter(Context context, Cursor cursor, int flags)
-    {
+    public WorkstationCursorAdapter(Context context, Cursor cursor, int flags) {
         super(context, cursor, 0);
 
         dbHelper = new WorkbookDbHelper(context);
@@ -52,14 +57,12 @@ public class WorkstationCursorAdapter extends CursorAdapter {
     }
 
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent)
-    {
-        return LayoutInflater.from(context).inflate(R.layout.listitem_histo, parent, false);
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        return LayoutInflater.from(context).inflate(R.layout.listitem_bubble, parent, false);
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor)
-    {
+    public void bindView(View view, Context context, Cursor cursor) {
         TextView tvHeader = (TextView) view.findViewById(R.id.tvHeader);
         TextView tvBody = (TextView) view.findViewById(R.id.tvBody);
 
@@ -67,16 +70,14 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         int project_count = cursor.getInt(cursor.getColumnIndexOrThrow("count"));
 
         Cursor ordersCrs = sqlDB.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(
-                cursor.getInt(cursor.getColumnIndexOrThrow("_id"))),null);
+                cursor.getInt(cursor.getColumnIndexOrThrow("_id"))), null);
 
         String reihenfolge = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_REIHENFOLGE));
-        if (reihenfolge == null)
-        {
+        if (reihenfolge == null) {
             reihenfolge = "nicht definiert";
         }
         String kapStrg = cursor.getString(cursor.getColumnIndexOrThrow(WorkbookContract.WorkstationEntry.COLUMN_NAME_KAPSTRG));
-        if (kapStrg == null)
-        {
+        if (kapStrg == null) {
             kapStrg = "nicht definiert";
         }
 
@@ -88,11 +89,10 @@ public class WorkstationCursorAdapter extends CursorAdapter {
 
         int TAA;
         HashMap<Integer, Integer> taaMap = new HashMap();
-        List<BarEntry> entries = new ArrayList<>();
+        List<Entry> entries = new ArrayList<>();
 
 
-        while (ordersCrs.moveToNext())
-        {
+        while (ordersCrs.moveToNext()) {
             Date documentedDate, targetDate;
             try {
                 documentedDate = DateHelper.ISOFormat.parse(
@@ -113,11 +113,9 @@ public class WorkstationCursorAdapter extends CursorAdapter {
                 else if (TAA > maxHisto)
                     TAA = maxHisto + 1;
 
-                if (taaMap.get(TAA) != null)
-                {
+                if (taaMap.get(TAA) != null) {
                     taaMap.put(TAA, taaMap.get(TAA) + 1);
-                } else
-                {
+                } else {
                     taaMap.put(TAA, 1);
                 }
 
@@ -126,42 +124,56 @@ public class WorkstationCursorAdapter extends CursorAdapter {
             }
         }
 
-        for (Map.Entry<Integer, Integer> entry: taaMap.entrySet())
-        {
-            entries.add(new BarEntry(entry.getKey(), entry.getValue()));
+        int y_max = 0;
+        for (Map.Entry<Integer, Integer> entry : taaMap.entrySet()) {
+            for (int i = 1; i <= entry.getValue(); i++) {
+                entries.add(new BarEntry(entry.getKey(), i));
+            }
+            if (y_max < entry.getValue()) {
+                y_max = entry.getValue();
+            }
         }
-        BarDataSet dataSet = new BarDataSet(entries, "Terminabweichung");
+        ScatterDataSet dataSet = new ScatterDataSet(entries, "Terminabweichung");
+        dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
+        dataSet.setDrawValues(false);
+        dataSet.setScatterShapeSize(25f);
         //dataSet.setBarBorderWidth(1f);
         /*dataSet.setBarSpacePercent(0.1f);*/
 
         /*
         TBA STYLING
          */
-        BarChart chart = (BarChart) view.findViewById(R.id.hist_chart);
-        BarData barData = new BarData(dataSet);
-        barData.setBarWidth(0.9f);
-        barData.setValueFormatter(new MyValueFormatter());
-        chart.setData(barData);
-        chart.setDragEnabled(false);
-        chart.setScaleEnabled(false);
+        ScatterChart chart = (ScatterChart) view.findViewById(R.id.bubble_chart);
+        ScatterData scatterData = new ScatterData(dataSet);
+        scatterData.setValueFormatter(new MyValueFormatter());
+        chart.setData(scatterData);
         chart.setDoubleTapToZoomEnabled(false);
-        chart.setPinchZoom(false);
+        chart.getLegend().setEnabled(true);
+        chart.getLegend().setPosition(Legend.LegendPosition.RIGHT_OF_CHART_INSIDE);
 
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chart.getXAxis().setGranularity(1f);
-        chart.getAxisLeft().setGranularity(1f);
-        chart.getAxisLeft().setAxisMinValue(0);
         chart.getAxisRight().setEnabled(false);
-        chart.getXAxis().setValueFormatter(new LimitXAxisFormatter(minHisto, maxHisto));
-        /*chart.getXAxis().setAxisMinValue(minHisto-1);
-        chart.getXAxis().setAxisMaxValue(maxHisto+1);*/
-        chart.animateY(150, Easing.EasingOption.EaseOutCirc);
+        chart.getAxisLeft().setGranularity(1f);
+        chart.getAxisLeft().setAxisMinValue(.5f);
+        chart.getAxisLeft().setAxisMaxValue(Math.max(5, y_max));
+        chart.getAxisLeft().setDrawLabels(true);
 
-        chart.setDescription("Terminabweichung");
+        chart.getXAxis().setValueFormatter(new LimitXAxisFormatter(minHisto, maxHisto));
+        chart.getXAxis().setGranularity(1f);
+        chart.getXAxis().setAxisMinValue(minHisto - 1.5f);
+        chart.getXAxis().setAxisMaxValue(maxHisto + 1.5f);
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.setDescription("");
+
+        TextView xlabel = (TextView) view.findViewById(R.id.xTitle);
+        xlabel.setText("verbleibende Durchlaufzeit[Tage]");
+        TextView ylabel = (TextView) view.findViewById(R.id.yTitle);
+        ylabel.setText("Anzahl[-]");
+
+        chart.setDescription("");
 
         ZDLVm = ((double) ZDLV) / project_count;
 
-        double ZDL = ((double)project_count) / output;
+        double ZDL = ((double) project_count) / output;
 
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
@@ -187,8 +199,7 @@ public class WorkstationCursorAdapter extends CursorAdapter {
     }
 
     @Override
-    public void changeCursor(Cursor cursor)
-    {
+    public void changeCursor(Cursor cursor) {
         super.changeCursor(cursor);
     }
 }

@@ -168,7 +168,7 @@ public class WorkbookCursorAdapter extends CursorAdapter{
                         current_overlooked = 6;
 
                     cursor_ord.moveToPosition(current_pos);
-                    entries.add(new Entry(current_overlooked,entry_nums[current_overlooked]));
+                    entries.add(new Entry(current_overlooked,entry_nums[current_overlooked]+1));
                     entry_nums[current_overlooked] = entry_nums[current_overlooked] + 1;
                 }
             }
@@ -212,13 +212,13 @@ public class WorkbookCursorAdapter extends CursorAdapter{
 
         chart.getAxisRight().setEnabled(false);
         chart.getAxisLeft().setGranularity(1f);
-        chart.getAxisLeft().setAxisMinValue(-0.5f);
+        chart.getAxisLeft().setAxisMinValue(.5f);
         chart.getAxisLeft().setAxisMaxValue(Math.max(5, Ints.max(entry_nums)));
         chart.getAxisLeft().setDrawLabels(true);
 
         chart.getXAxis().setValueFormatter(new LimitXAxisFormatter(0,5));
         chart.getXAxis().setGranularity(1f);
-        chart.getXAxis().setAxisMinValue(-0.5f);
+        chart.getXAxis().setAxisMinValue(-.5f);
         chart.getXAxis().setAxisMaxValue(6.5f);
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.setDescription("");
