@@ -3,6 +3,7 @@ package hiwi.mike.auftraganalyseapp.CursorAdapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,9 @@ public class WorkstationCursorAdapter extends CursorAdapter {
     final Integer minHisto = -5;
     final Integer maxHisto = 5;
 
+    final Integer okayMin = -2;
+    final Integer okayMax = 2;
+
     public WorkstationCursorAdapter(Context context, Cursor cursor, int flags) {
         super(context, cursor, 0);
 
@@ -89,7 +93,8 @@ public class WorkstationCursorAdapter extends CursorAdapter {
 
         int TAA;
         HashMap<Integer, Integer> taaMap = new HashMap();
-        List<Entry> entries = new ArrayList<>();
+        List<Entry> entriesOkay = new ArrayList<>();
+        List<Entry> entriesNotOkay = new ArrayList<>();
 
 
         while (ordersCrs.moveToNext()) {
@@ -127,16 +132,28 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         int y_max = 0;
         for (Map.Entry<Integer, Integer> entry : taaMap.entrySet()) {
             for (int i = 1; i <= entry.getValue(); i++) {
-                entries.add(new BarEntry(entry.getKey(), i));
+                if (entry.getKey() <= okayMax && entry.getKey() >= okayMin )
+                {
+                    entriesOkay.add(new Entry(entry.getKey(), i));
+                }else
+                {
+                    entriesNotOkay.add(new Entry(entry.getKey(), i));
+                }
             }
             if (y_max < entry.getValue()) {
                 y_max = entry.getValue();
             }
         }
-        ScatterDataSet dataSet = new ScatterDataSet(entries, "Terminabweichung");
-        dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
-        dataSet.setDrawValues(false);
-        dataSet.setScatterShapeSize(25f);
+        ScatterDataSet dataSetOkay = new ScatterDataSet(entriesOkay, "Terminabweichung");
+        dataSetOkay.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
+        dataSetOkay.setDrawValues(false);
+        dataSetOkay.setScatterShapeSize(25f);
+        dataSetOkay.setColor(Color.rgb(50,205,50));
+        ScatterDataSet dataSetNotOkay = new ScatterDataSet(entriesNotOkay, "Terminabweichung");
+        dataSetNotOkay.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
+        dataSetNotOkay.setDrawValues(false);
+        dataSetNotOkay.setScatterShapeSize(25f);
+        dataSetNotOkay.setColor(Color.rgb(220,20,60));
         //dataSet.setBarBorderWidth(1f);
         /*dataSet.setBarSpacePercent(0.1f);*/
 
@@ -144,7 +161,8 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         TBA STYLING
          */
         ScatterChart chart = (ScatterChart) view.findViewById(R.id.bubble_chart);
-        ScatterData scatterData = new ScatterData(dataSet);
+        ScatterData scatterData = new ScatterData(dataSetOkay);
+        scatterData.addDataSet(dataSetNotOkay);
         scatterData.setValueFormatter(new MyValueFormatter());
         chart.setData(scatterData);
         chart.setDoubleTapToZoomEnabled(false);
@@ -154,7 +172,7 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         chart.getAxisRight().setEnabled(false);
         chart.getAxisLeft().setGranularity(1f);
         chart.getAxisLeft().setAxisMinValue(.5f);
-        chart.getAxisLeft().setAxisMaxValue(Math.max(5, y_max));
+        chart.getAxisLeft().setAxisMaxValue(Math.max(5, y_max) + .5f);
         chart.getAxisLeft().setDrawLabels(true);
 
         chart.getXAxis().setValueFormatter(new LimitXAxisFormatter(minHisto, maxHisto));
