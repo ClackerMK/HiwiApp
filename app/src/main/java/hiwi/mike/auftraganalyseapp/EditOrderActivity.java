@@ -74,6 +74,10 @@ public class EditOrderActivity extends AppCompatActivity {
 
             newOrder = false;
 
+            dbHelper.getWritableDatabase().execSQL("UPDATE " + WorkbookContract.OrderEntry.TABLE_NAME +
+                    " SET " + WorkbookContract.OrderEntry.COLUMN_NAME_LAST_OPENED + "=datetime('now')" +
+                    " WHERE " + WorkbookContract.OrderEntry.COLUMN_NAME_ENTRY_ID + " = " + OrdrID.toString() + ";");
+
             SQLiteDatabase sql = dbHelper.getWritableDatabase();
 
             Cursor cursor = sql.rawQuery(WorkbookContract.GET_ORDER_BY_ID(OrdrID),null);

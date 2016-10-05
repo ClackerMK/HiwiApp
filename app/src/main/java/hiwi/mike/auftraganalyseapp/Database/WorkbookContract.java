@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
 public final class WorkbookContract {
     public WorkbookContract() {}
 
-    public static final int     VERSION = 12;
+    public static final int     VERSION = 13;
 
     private static final String TEXT_TYPE          = " TEXT";
     private static final String COMMA_SEP          = ",";
@@ -67,6 +67,7 @@ public final class WorkbookContract {
         public static final String COLUMN_NAME_ENTRY_TIME = "givenTime";
         public static final String COLUMN_NAME_ENTRY_DOCUMENTED_DATE = "documentedDate";
         public static final String COLUMN_NAME_WIP = "wip";
+        public static final String COLUMN_NAME_LAST_OPENED = "lastOpened";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
                 "(" +
@@ -77,6 +78,7 @@ public final class WorkbookContract {
                 COLUMN_NAME_ENTRY_DOCUMENTED_DATE + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_ENTRY_TIME + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_WIP + " INTEGER" + COMMA_SEP +
+                COLUMN_NAME_LAST_OPENED + TEXT_TYPE + COMMA_SEP +
                 "FOREIGN KEY (" + COLUMN_NAME_WORKSTATION_ID + ") " +
                 "REFERENCES " + WorkstationEntry.TABLE_NAME + " (" + WorkstationEntry.COLUMN_NAME_ENTRY_ID + ") ON DELETE CASCADE" +
                 ");";
@@ -108,6 +110,11 @@ public final class WorkbookContract {
 
     public static final String GET_ALL_WORKBOOKS()
     {
+        return GET_ALL_WORKBOOKS(WorkbookEntry.COLUMN_NAME_LAST_OPENED + " DESC");
+    }
+
+    public static final String GET_ALL_WORKBOOKS(String sortBy)
+    {
         return "SELECT " + WorkbookEntry.TABLE_NAME + "." + WorkbookEntry.COLUMN_NAME_ENTRY_ID + " as _id" + COMMA_SEP +
                 WorkbookEntry.TABLE_NAME + "." + WorkbookEntry.COLUMN_NAME_ENTRY_NAME + AS + WorkbookEntry.COLUMN_NAME_ENTRY_NAME  + COMMA_SEP +
                 " COUNT(" + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + ") as count" + //COMMA_SEP +
@@ -118,7 +125,7 @@ public final class WorkbookContract {
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_WORKBOOK_ID +
                 " GROUP BY " + WorkbookEntry.TABLE_NAME + "." + WorkbookEntry.COLUMN_NAME_ENTRY_ID + COMMA_SEP +
                 WorkbookEntry.TABLE_NAME + "." + WorkbookEntry.COLUMN_NAME_ENTRY_NAME +
-                " ORDER BY " + WorkbookEntry.TABLE_NAME + "." + WorkbookEntry.COLUMN_NAME_LAST_OPENED + " DESC ;";
+                " ORDER BY " + WorkbookEntry.TABLE_NAME + "." + sortBy + ";";
     }
 
     public static final String GET_WORKBOOKS_BY_ID(int id)
@@ -140,6 +147,11 @@ public final class WorkbookContract {
 
     public static final String GET_WORKSTATIONS_BY_WORKBOOK(int id)
     {
+        return GET_WORKSTATIONS_BY_WORKBOOK(id, WorkstationEntry.COLUMN_NAME_LAST_OPENED + " DESC");
+    }
+
+    public static final String GET_WORKSTATIONS_BY_WORKBOOK(int id, String sortBy)
+    {
         return "SELECT " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID + " as _id" + COMMA_SEP +
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_NAME + AS + WorkstationEntry.COLUMN_NAME_ENTRY_NAME  + COMMA_SEP +
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_OUTPUT + AS + WorkstationEntry.COLUMN_NAME_OUTPUT + COMMA_SEP +
@@ -153,11 +165,16 @@ public final class WorkbookContract {
                 OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID +
                 " WHERE " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_WORKBOOK_ID + "=" + id +
                 " GROUP BY " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID +
-                " ORDER BY " + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_LAST_OPENED + " DESC;";
+                " ORDER BY " + WorkstationEntry.TABLE_NAME + "." + sortBy + ";";
     }
 
 
-    public static final String GET_ORDERS_BY_WORKSTATIONS(int prj_id)
+    public static final String GET_ORDERS_BY_WORKSTATIONS(int ws_id)
+    {
+        return GET_ORDERS_BY_WORKSTATIONS(ws_id, OrderEntry.COLUMN_NAME_LAST_OPENED + " DESC");
+    }
+
+    public static final String GET_ORDERS_BY_WORKSTATIONS(int ws_id, String sortBy)
     {
         return "SELECT " + OrderEntry.TABLE_NAME  + "." + OrderEntry.COLUMN_NAME_ENTRY_ID + " as _id" + COMMA_SEP +
                 OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_ENTRY_NR + AS + OrderEntry.COLUMN_NAME_ENTRY_NR + COMMA_SEP +
@@ -168,7 +185,8 @@ public final class WorkbookContract {
                 WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_NAME + AS +  WorkstationEntry.COLUMN_NAME_ENTRY_NAME +
                 " FROM " + OrderEntry.TABLE_NAME + " INNER JOIN " + WorkstationEntry.TABLE_NAME + " ON " +
                 OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID + "=" + WorkstationEntry.TABLE_NAME + "." + WorkstationEntry.COLUMN_NAME_ENTRY_ID +
-                " WHERE " + OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID + "=" + prj_id + ";";
+                " WHERE " + OrderEntry.TABLE_NAME + "." + OrderEntry.COLUMN_NAME_WORKSTATION_ID + "=" + ws_id +
+                " ORDER BY " + OrderEntry.TABLE_NAME + "." + sortBy + ";";
     }
 
     public static final String GET_ORDER_BY_ID(int order_id)

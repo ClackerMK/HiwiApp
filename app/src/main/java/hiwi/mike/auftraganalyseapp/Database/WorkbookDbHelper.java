@@ -48,39 +48,8 @@ public class WorkbookDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        if (newVersion == 10 && oldVersion == 9)
-        {
-            Cursor wsCrs = db.query(WorkbookContract.WorkstationEntry.TABLE_NAME,
-                    null,null,null,null,null,null);
-            Cursor ordCrs = db.query(WorkbookContract.OrderEntry.TABLE_NAME,
-                    null,null,null,null,null,null);
-            db.execSQL(WorkbookContract.WorkstationEntry.DELETE_TABLE);
-            db.execSQL(WorkbookContract.OrderEntry.DELETE_TABLE);
-
-            db.execSQL(WorkbookContract.WorkstationEntry.CREATE_TABLE);
-            db.execSQL(WorkbookContract.OrderEntry.CREATE_TABLE);
-            while (wsCrs.moveToNext())
-            {
-                ContentValues vals = new ContentValues();
-                DatabaseUtils.cursorRowToContentValues(wsCrs, vals);
-
-                db.insert(WorkbookContract.WorkstationEntry.TABLE_NAME, null, vals);
-            }
-            while (ordCrs.moveToNext())
-            {
-                ContentValues vals = new ContentValues();
-                DatabaseUtils.cursorRowToContentValues(ordCrs, vals);
-
-                db.insert(WorkbookContract.OrderEntry.TABLE_NAME, null, vals);
-            }
-        }
-            else
-        {
-            onDelete(db);
-            onCreate(db);
-
-        }
+        onDelete(db);
+        onCreate(db);
     }
 
     @Override

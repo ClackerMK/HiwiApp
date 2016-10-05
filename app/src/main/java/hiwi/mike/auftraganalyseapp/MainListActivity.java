@@ -16,6 +16,8 @@ import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.github.mikephil.charting.charts.ScatterChart;
+
 import hiwi.mike.auftraganalyseapp.CursorAdapter.OrderCursorAdapter;
 import hiwi.mike.auftraganalyseapp.CursorAdapter.WorkstationCursorAdapter;
 import hiwi.mike.auftraganalyseapp.CursorAdapter.WorkbookCursorAdapter;
@@ -23,6 +25,7 @@ import hiwi.mike.auftraganalyseapp.Database.WorkbookContract;
 import hiwi.mike.auftraganalyseapp.Database.WorkbookDbHelper;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkstationDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.AddWorkbookDialogFragment;
+import hiwi.mike.auftraganalyseapp.DialogFragments.ChooseSortMethodDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.EditWorkbookDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.EditWorkstationDialogFragment;
 import hiwi.mike.auftraganalyseapp.DialogFragments.OnAcceptDialogFragment;
@@ -38,6 +41,7 @@ public class MainListActivity extends AppCompatActivity {
     private Tables  currentTable = Tables.Workbooks;
     private Integer currentWBID = null;
     private Integer currentPrjID = null;
+    private String  sortMethod = WorkbookContract.WorkbookEntry.COLUMN_NAME_LAST_OPENED;
 
     private WorkbookDbHelper dbHelper;
 
@@ -228,6 +232,31 @@ public class MainListActivity extends AppCompatActivity {
             edf.show(getSupportFragmentManager(),null);*/
             Intent intent = new Intent(this, NewExportActivity.class);
             startActivityForResult(intent, 1);
+        } else if (id == R.id.action_sort)
+        {
+            final ChooseSortMethodDialogFragment dialogFragment = new ChooseSortMethodDialogFragment();
+            switch (currentTable)
+            {
+                case Workbooks:
+                    dialogFragment.setCurrentWorkbook(WorkbookContract.WorkbookEntry.TABLE_NAME);
+                    break;
+                case Workstations:
+                    dialogFragment.setCurrentWorkbook(WorkbookContract.WorkstationEntry.TABLE_NAME);
+                    break;
+                case Orders:
+                    dialogFragment.setCurrentWorkbook(WorkbookContract.OrderEntry.TABLE_NAME);
+                    break;
+            }
+
+            dialogFragment.setOnCleanup(new Runnable() {
+                @Override
+                public void run() {
+                    sortMethod = dialogFragment.getSelectedSortMethod();
+                    reloadAll();
+                }
+            });
+
+            dialogFragment.show(getSupportFragmentManager(), null);
         }
 
         return super.onOptionsItemSelected(item);
@@ -275,7 +304,9 @@ public class MainListActivity extends AppCompatActivity {
                 currentWBID = null;
                 currentPrjID = null;
 
-                crs = db.rawQuery(WorkbookContract.GET_ALL_WORKBOOKS(), null);
+                sortMethod = WorkbookContract.WorkbookEntry.COLUMN_NAME_LAST_OPENED + " DESC";
+
+                crs = db.rawQuery(WorkbookContract.GET_ALL_WORKBOOKS(sortMethod), null);
                 adapter = new WorkbookCursorAdapter(getBaseContext(), crs, 0);
 
                 title = getString(R.string.app_name);
@@ -289,12 +320,20 @@ public class MainListActivity extends AppCompatActivity {
                 }
                 currentPrjID = null;
 
+                sortMethod = WorkbookContract.WorkstationEntry.COLUMN_NAME_LAST_OPENED + " DESC";
+
+
                 /*ContentValues vals;
                 vals.put(WorkbookContract.WorkbookEntry.COLUMN_NAME_LAST_OPENED, );
                 db.update(WorkbookContract.WorkbookEntry.TABLE_NAME,,)
                 */
-                crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(currentWBID), null);
+                crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(currentWBID, sortMethod), null);
                 adapter = new WorkstationCursorAdapter(getBaseContext(), crs, 0);
+
+                dbHelper.getWritableDatabase().execSQL("UPDATE " + WorkbookContract.WorkbookEntry.TABLE_NAME +
+                        " SET " + WorkbookContract.WorkbookEntry.COLUMN_NAME_LAST_OPENED + "=datetime('now')" +
+                        " WHERE " + WorkbookContract.WorkbookEntry.COLUMN_NAME_ENTRY_ID + " = " + currentWBID.toString() + ";");
+
 
                 titleCrs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_BY_ID(currentWBID), null);
                 titleCrs.moveToFirst();
@@ -309,7 +348,14 @@ public class MainListActivity extends AppCompatActivity {
                     currentPrjID = id;
                 }
 
-                crs = db.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(currentPrjID), null);
+                sortMethod = WorkbookContract.OrderEntry.COLUMN_NAME_LAST_OPENED + " DESC";
+
+
+                dbHelper.getWritableDatabase().execSQL("UPDATE " + WorkbookContract.WorkstationEntry.TABLE_NAME +
+                        " SET " + WorkbookContract.WorkstationEntry.COLUMN_NAME_LAST_OPENED + "=datetime('now')" +
+                        " WHERE " + WorkbookContract.WorkstationEntry.COLUMN_NAME_ENTRY_ID + " = " + currentPrjID.toString() + ";");
+
+                crs = db.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(currentPrjID, sortMethod), null);
                 adapter = new OrderCursorAdapter(getBaseContext(), crs, 0);
 
                 titleCrs = db.rawQuery(WorkbookContract.GET_WORKBOOKS_BY_ID(currentWBID), null);
@@ -345,13 +391,13 @@ public class MainListActivity extends AppCompatActivity {
 
         switch (currentTable) {
             case Workbooks:
-                crs = db.rawQuery(WorkbookContract.GET_ALL_WORKBOOKS(), null);
+                crs = db.rawQuery(WorkbookContract.GET_ALL_WORKBOOKS(sortMethod), null);
                 break;
             case Workstations:
-                crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(currentWBID), null);
+                crs = db.rawQuery(WorkbookContract.GET_WORKSTATIONS_BY_WORKBOOK(currentWBID, sortMethod), null);
                 break;
             case Orders:
-                crs = db.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(currentPrjID), null);
+                crs = db.rawQuery(WorkbookContract.GET_ORDERS_BY_WORKSTATIONS(currentPrjID, sortMethod), null);
                 break;
         }
 
@@ -364,6 +410,19 @@ public class MainListActivity extends AppCompatActivity {
                 ((CursorAdapter)adapter).notifyDataSetChanged();
             }
         });
+
+        ListView listView = (ListView) findViewById(R.id.listView);
+        for (int i = 0; i < listView.getCount(); i++)
+        {
+            View v = listView.getChildAt(i);
+            if (v != null) {
+                ScatterChart chart = (ScatterChart) v.findViewById(R.id.bubble_chart);
+                if (chart != null) {
+                    chart.notifyDataSetChanged();
+                    chart.invalidate();
+                }
+            }
+        }
     }
 
     public void hideBackButton()

@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="hiwi.mike.auftraganalyseapp.MainListActivity">
     <item
+        android:id="@+id/action_sort"
+        android:orderInCategory="101"
+        android:title="@string/sortieren_nach"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_export"
         android:orderInCategory="102"
         android:title="@string/action_export"

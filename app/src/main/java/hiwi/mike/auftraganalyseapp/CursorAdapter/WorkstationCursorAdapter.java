@@ -50,8 +50,8 @@ public class WorkstationCursorAdapter extends CursorAdapter {
     final Integer minHisto = -5;
     final Integer maxHisto = 5;
 
-    final Integer okayMin = -2;
-    final Integer okayMax = 2;
+    final Integer okayMin = minHisto - 1;
+    final Integer okayMax = maxHisto + 1;
 
     public WorkstationCursorAdapter(Context context, Cursor cursor, int flags) {
         super(context, cursor, 0);
@@ -148,7 +148,7 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         dataSetOkay.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
         dataSetOkay.setDrawValues(false);
         dataSetOkay.setScatterShapeSize(25f);
-        dataSetOkay.setColor(Color.rgb(50,205,50));
+        //dataSetOkay.setColor(Color.rgb(50,205,50));
         ScatterDataSet dataSetNotOkay = new ScatterDataSet(entriesNotOkay, "Terminabweichung");
         dataSetNotOkay.setScatterShape(ScatterChart.ScatterShape.CIRCLE);
         dataSetNotOkay.setDrawValues(false);
@@ -166,8 +166,8 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         scatterData.setValueFormatter(new MyValueFormatter());
         chart.setData(scatterData);
         chart.setDoubleTapToZoomEnabled(false);
-        chart.getLegend().setEnabled(true);
-        chart.getLegend().setPosition(Legend.LegendPosition.RIGHT_OF_CHART_INSIDE);
+        chart.getLegend().setEnabled(false);
+        //chart.getLegend().setPosition(Legend.LegendPosition.RIGHT_OF_CHART_INSIDE);
 
         chart.getAxisRight().setEnabled(false);
         chart.getAxisLeft().setGranularity(1f);

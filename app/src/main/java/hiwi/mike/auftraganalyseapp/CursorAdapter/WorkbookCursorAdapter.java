@@ -72,7 +72,7 @@ public class WorkbookCursorAdapter extends CursorAdapter{
         int project_count = cursor.getInt(cursor.getColumnIndexOrThrow("count"));
 
         tvHeader.setText(name);
-        tvBody.setText(String.format("Projekte: %d",project_count));
+        tvBody.setText(String.format("Arbeitsstationen: %d",project_count));
 
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
 

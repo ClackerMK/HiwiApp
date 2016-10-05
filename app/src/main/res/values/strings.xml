@@ -6,4 +6,27 @@
     <string name="title_activity_edit_order">EditOrderActivity</string>
     <string name="title_activity_export">Welche Mappen und Maschinen bzw Arbeitsplätze sollen exportiert werden?</string>
     <string name="title_activity_new_export">NewExportActivity</string>
+    <string name="sortieren_nach">Sortieren nach...</string>
+    <string-array name="sortmodes_workbooks">
+        <item>zuletzt geöffnet</item>
+        <item>Alphabetisch A->Z</item>
+        <item>Alphabetisch Z->A</item>
+    </string-array>
+    <string-array name="sortmodes_workstations">
+        <item>zuletzt geöffnet</item>
+        <item>Alphabetisch A->Z</item>
+        <item>Alphabetisch Z->A</item>
+        <item>Leistung, Ansteigend</item>
+        <item>Leistung, Absteigend</item>
+    </string-array>
+    <string-array name="sortmodes_orders">
+        <item>zuletzt geöffnet</item>
+        <item>Alphabetisch A->Z</item>
+        <item>Alphabetisch Z->A</item>
+        <item>Plandatum, Ansteigend</item>
+        <item>Plandatum, Absteigend</item>
+        <item>Eintragsdatum, Ansteigend</item>
+        <item>Eintragsdatum, Absteigend</item>
+        <item>WIP</item>
+    </string-array>
 </resources>
