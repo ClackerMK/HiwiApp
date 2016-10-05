@@ -206,7 +206,6 @@ public class WorkbookCursorAdapter extends CursorAdapter{
         bubbleData.addDataSet(dataSet);*/
 
         chart.setData(scatterData);
-        chart.animateY(400, Easing.EasingOption.EaseOutCirc);
         chart.setDoubleTapToZoomEnabled(false);
         chart.getLegend().setEnabled(true);
         chart.getLegend().setPosition(Legend.LegendPosition.RIGHT_OF_CHART_INSIDE);
