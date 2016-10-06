@@ -28,6 +28,7 @@ import com.google.common.primitives.Ints;
 
 import org.w3c.dom.Text;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,6 +76,9 @@ public class WorkbookCursorAdapter extends CursorAdapter{
         tvBody.setText(String.format("Arbeitsstationen: %d",project_count));
 
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+
+        int num_ok_rflg = 0;
+        int num_total = 0;
 
         view.setTag(id);
 
@@ -167,6 +171,11 @@ public class WorkbookCursorAdapter extends CursorAdapter{
                     if (current_overlooked > 6)
                         current_overlooked = 6;
 
+                    if (current_overlooked < 2)
+                        num_ok_rflg++;
+
+                    num_total++;
+
                     cursor_ord.moveToPosition(current_pos);
                     entries.add(new Entry(current_overlooked,entry_nums[current_overlooked]+1));
                     entry_nums[current_overlooked] = entry_nums[current_overlooked] + 1;
@@ -220,8 +229,13 @@ public class WorkbookCursorAdapter extends CursorAdapter{
         chart.getXAxis().setGranularity(1f);
         chart.getXAxis().setAxisMinValue(-.5f);
         chart.getXAxis().setAxisMaxValue(6.5f);
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chart.setDescription("");
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTcccccccccccccccccccccTOM);
+
+        NumberFormat numberFormat = NumberFormat.getPercentInstance();
+        numberFormat.setMinimumFractionDigits(1);
+        numberFormat.setMaximumFractionDigits(2);
+
+        chart.setDescription("Reihenfolgedisziplin = " + numberFormat.format((float)(num_ok_rflg) / num_total));
 
         TextView xlabel = (TextView)view.findViewById(R.id.xTitle);
         xlabel.setText("Anzahl übergangener Aufträge[-]");
