@@ -37,22 +37,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Auftragszeit"
+            android:text="Auftragszeit in Stunden"
             android:id="@+id/textView2" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="time"
+            android:inputType="numberDecimal"
             android:ems="10"
-            android:id="@+id/time_text"
-            android:onClick="selectTime"/>
+            android:id="@+id/time_text" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Plan-Fertigstellung"
+            android:text="Plan-Fertigstellungstermin"
             android:id="@+id/textView3" />
 
         <TextView

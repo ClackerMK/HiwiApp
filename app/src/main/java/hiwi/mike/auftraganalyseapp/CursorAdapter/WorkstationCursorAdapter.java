@@ -65,6 +65,20 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         return LayoutInflater.from(context).inflate(R.layout.listitem_bubble, parent, false);
     }
 
+    String PluralSingular (float i, String singular, String plural)
+    {
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+
+        if (df.format(i).equals("1"))
+        {
+            return singular;
+        }else
+        {
+            return plural;
+        }
+    }
+
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         TextView tvHeader = (TextView) view.findViewById(R.id.tvHeader);
@@ -182,13 +196,6 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.setDescription("");
 
-        TextView xlabel = (TextView) view.findViewById(R.id.xTitle);
-        xlabel.setText("verbleibende Durchlaufzeit[Tage]");
-        TextView ylabel = (TextView) view.findViewById(R.id.yTitle);
-        ylabel.setText("Anzahl[-]");
-
-        chart.setDescription("");
-
         ZDLVm = ((double) ZDLV) / project_count;
 
         double ZDL = ((double) project_count) / output;
@@ -196,24 +203,30 @@ public class WorkstationCursorAdapter extends CursorAdapter {
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.HALF_UP);
 
+
         tvHeader.setText(name);
         tvBody.setText(String.format(
-                "Bestand: %d\n" +
-                        "Leistung: %s\n" +
-                        "Durchlaufzeit: %s\n" +
-                        "mittlere verbleibende Durchlaufzeit: %s\n" +
-                        "Terminabweihung: %s\n" +
+                "Bestand: %d %s\n" +
+                        "mittlere Leistung: %s %s\n" +
+                        "Durchlaufzeit: %s %s\n" +
+                        "mittlere verbleibende Durchlaufzeit: %s %s\n" +
+                        "prognostizierte Terminabweihung: %s %s\n" +
                         "Reihenfolgebildung: %s\n" +
                         "Kapazitätssteuerung: %s",
-                project_count,
-                df.format(output),
-                df.format(ZDL),
-                df.format(ZDLVm),
-                df.format((ZDL / 2) - ZDLVm),
+                project_count, PluralSingular(project_count, "Auftrag", "Aufträge"),
+                df.format(output), PluralSingular((float)output, "Auftrag", "Aufträge") + " pro Tag",
+                df.format(ZDL), PluralSingular((float)ZDL, "Tag", "Tage"),
+                df.format(ZDLVm), PluralSingular((float)ZDLVm, "Tag", "Tage"),
+                df.format((ZDL / 2) - ZDLVm), PluralSingular((float)((ZDL / 2) - ZDLVm), "Tag", "Tage"),
                 reihenfolge,
                 kapStrg));
 
         view.setTag(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
+
+        TextView xlabel = (TextView) view.findViewById(R.id.xTitle);
+        xlabel.setText("verbleibende Durchlaufzeit [Tage]");
+        TextView ylabel = (TextView) view.findViewById(R.id.yTitle);
+        ylabel.setText("Anzahl [-]");
     }
 
     @Override

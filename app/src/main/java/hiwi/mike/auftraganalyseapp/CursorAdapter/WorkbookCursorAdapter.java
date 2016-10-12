@@ -229,18 +229,19 @@ public class WorkbookCursorAdapter extends CursorAdapter{
         chart.getXAxis().setGranularity(1f);
         chart.getXAxis().setAxisMinValue(-.5f);
         chart.getXAxis().setAxisMaxValue(6.5f);
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTcccccccccccccccccccccTOM);
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
         NumberFormat numberFormat = NumberFormat.getPercentInstance();
         numberFormat.setMinimumFractionDigits(1);
         numberFormat.setMaximumFractionDigits(2);
 
         chart.setDescription("Reihenfolgedisziplin = " + numberFormat.format((float)(num_ok_rflg) / num_total));
+        chart.setDescriptionTextSize(24f);
 
         TextView xlabel = (TextView)view.findViewById(R.id.xTitle);
-        xlabel.setText("Anzahl übergangener Aufträge[-]");
+        xlabel.setText("Anzahl übergangener Aufträge [-]");
         TextView ylabel = (TextView)view.findViewById(R.id.yTitle);
-        ylabel.setText("Anzahl[-]");
+        ylabel.setText("Anzahl [-]");
 
     }
 
